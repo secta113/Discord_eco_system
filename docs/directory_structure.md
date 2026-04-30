@@ -1,7 +1,7 @@
 # ディレクトリ構造 (directory_structure.md)
 
 > **最終更新**: 2026-05-01  
-> *v2.17 ファイル構成の実態反映：新規ファイル追記・削除済みファイル除去・card/components構成更新*
+> *v2.2 サービス完全分割・動的アセット合成の反映、および CHANGELOG.md 追記*
 
 ---
 
@@ -210,6 +210,7 @@
     ├── gacha.md               — ガチャイベント設計
     ├── operations.md          — デプロイ・運用仕様
     ├── TODO.md                — 将来課題・ロードマップ
+    ├── CHANGELOG.md           — バージョン更新履歴 (v2.2 以降)
     ├── Roulette System Specification.md — ルーレット仕様書
     ├── dobumon/               — 怒武者関連ドキュメント
     │   ├── dobumon.md             — 育成・血統・技・戦闘仕様 (主仕様書)
