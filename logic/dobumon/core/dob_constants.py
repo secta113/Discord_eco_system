@@ -1,0 +1,2 @@
+# 所持制限
+MAX_DOBUMON_POSSESSION = 8

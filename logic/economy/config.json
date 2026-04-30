@@ -1,0 +1,32 @@
+{
+  "PAYOUT_RATES": {
+    "LEGENDARY": 1.0,
+    "EPIC": 0.3,
+    "RARE": 0.1,
+    "COMMON": 0.03
+  },
+  "GAME_RATIO_CAPS": {
+    "POKER": 1.0,
+    "BLACKJACK": 0.5,
+    "CHINCHIRO": 0.2
+  },
+  "DYNAMIC_HARD_CAP_RATIOS": {
+    "LEGENDARY": 0.5,
+    "EPIC": 0.15,
+    "RARE": 0.05,
+    "COMMON": 0.02
+  },
+  "DYNAMIC_MIN_PAYOUT_RATIOS": {
+    "LEGENDARY": 0.02,
+    "EPIC": 0.005,
+    "RARE": 0.001,
+    "COMMON": 0.0002
+  },
+  "OVERFLOW_THRESHOLD_RATIO": 3.0,
+  "OVERFLOW_DIVIDEND_RATE": 0.01,
+  "OVERFLOW_RANK_MULTIPLIERS": {
+    "Recovery": 2.0,
+    "Standard": 1.0,
+    "Prime": 0.5
+  }
+}

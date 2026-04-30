@@ -1,0 +1,107 @@
+{
+  "monster": {
+    "1": [
+      { "name": "The Lone Demon", "ranks": ["monster"], "personalities": [null] },
+      { "name": "Shadow in the Dark", "ranks": ["monster"], "personalities": ["calculated"] },
+      { "name": "Berserker of the Abyss", "ranks": ["monster"], "personalities": ["aggressive"] }
+    ],
+    "2": [
+      { "name": "Nightmare Duo", "ranks": ["monster", "legendary"], "personalities": ["aggressive", "shark"] },
+      { "name": "Monster and Random", "ranks": ["monster", "rare"], "personalities": ["calculated", null] },
+      { "name": "The King and Pawn", "ranks": ["monster", "trash"], "personalities": ["calculated", "timid"] },
+      { "name": "Double Trouble", "ranks": ["monster", "rare"], "personalities": ["aggressive", "bluffer"] },
+      { "name": "Monster and Master", "ranks": ["monster", "legendary"], "personalities": ["aggressive", "calculated"] }
+    ],
+    "3": [
+      { "name": "Raid Boss: Hard Mode", "ranks": ["monster", "legendary", "legendary"], "personalities": ["aggressive", "shark", "calculated"] },
+      { "name": "The Elite Trio (Catastrophe)", "ranks": ["monster", "legendary", "legendary"], "personalities": ["shark", "shark", "calculated"] },
+      { "name": "Monster's Wild Mix", "ranks": ["monster", "rare", "common"], "personalities": ["calculated", null, null] },
+      { "name": "The Puppet Master", "ranks": ["monster", "trash", "trash"], "personalities": ["calculated", "station", "timid"] },
+      { "name": "Chaos Theory", "ranks": ["monster", "rare", "common"], "personalities": ["aggressive", "bluffer", "normal"] },
+      { "name": "Doom Bringer (Boss)", "ranks": ["monster", "rare", "rare"], "personalities": ["aggressive", "calculated", "shark"] },
+      { "name": "The Hidden Threat", "ranks": ["monster", "common", "trash"], "personalities": ["calculated", "normal", "station"] },
+      { "name": "Triple Threat", "ranks": ["monster", "legendary", "rare"], "personalities": ["aggressive", "shark", "bluffer"] }
+    ]
+  },
+  "legendary": {
+    "1": [
+      { "name": "The Poker Sage", "ranks": ["legendary"], "personalities": ["calculated"] },
+      { "name": "Silent Assassin", "ranks": ["legendary"], "personalities": ["shark"] },
+      { "name": "Wild Legend", "ranks": ["legendary"], "personalities": [null] }
+    ],
+    "2": [
+      { "name": "Tournament Finalists", "ranks": ["legendary", "legendary"], "personalities": ["shark", "calculated"] },
+      { "name": "Legendary Chaos", "ranks": ["legendary", "legendary"], "personalities": [null, null] },
+      { "name": "The Pro and Protégé", "ranks": ["legendary", "rare"], "personalities": ["calculated", "normal"] },
+      { "name": "Golden Pair", "ranks": ["legendary", "legendary"], "personalities": ["shark", "bluffer"] }
+    ],
+    "3": [
+      { "name": "Shark Tank", "ranks": ["legendary", "legendary", "legendary"], "personalities": ["shark", "shark", "shark"] },
+      { "name": "Iron Fortress", "ranks": ["legendary", "legendary", "legendary"], "personalities": ["shark", "calculated", "calculated"] },
+      { "name": "Legendary Trio (Wild)", "ranks": ["legendary", "legendary", "rare"], "personalities": [null, null, null] },
+      { "name": "Professional Court", "ranks": ["legendary", "rare", "rare"], "personalities": ["calculated", "calculated", "shark"] },
+      { "name": "High Stakes Random", "ranks": ["legendary", null, null], "personalities": ["calculated", null, null] },
+      { "name": "The Summit", "ranks": ["legendary", "legendary", "legendary"], "personalities": ["calculated", "calculated", "calculated"] }
+    ]
+  },
+  "rare": {
+    "1": [
+      { "name": "Rising Grinder", "ranks": ["rare"], "personalities": ["calculated"] },
+      { "name": "Flashy Bluffer", "ranks": ["rare"], "personalities": ["bluffer"] },
+      { "name": "Rare Mystery", "ranks": ["rare"], "personalities": [null] }
+    ],
+    "2": [
+      { "name": "High Stakes Amateurs", "ranks": ["rare", "rare"], "personalities": ["aggressive", "bluffer"] },
+      { "name": "Rare Wild Duo", "ranks": ["rare", "rare"], "personalities": [null, null] },
+      { "name": "Aggressive Duo", "ranks": ["rare", "rare"], "personalities": ["aggressive", "aggressive"] },
+      { "name": "Rare and Random", "ranks": ["rare", null], "personalities": ["calculated", null] }
+    ],
+    "3": [
+      { "name": "The Bluffer's Club", "ranks": ["rare", "rare", "rare"], "personalities": ["bluffer", "bluffer", "bluffer"] },
+      { "name": "Rare Chaos Mix", "ranks": ["rare", "common", "trash"], "personalities": [null, null, null] },
+      { "name": "Wild Cards", "ranks": ["rare", "common", "trash"], "personalities": ["aggressive", "normal", "station"] },
+      { "name": "Solid Foundation", "ranks": ["rare", "rare", "common"], "personalities": ["calculated", "calculated", "normal"] },
+      { "name": "Midfield Battle", "ranks": ["rare", "rare", "rare"], "personalities": ["aggressive", "calculated", "bluffer"] },
+      { "name": "Rare Random Mix", "ranks": ["rare", null, null], "personalities": [null, null, null] }
+    ]
+  },
+  "common": {
+    "1": [
+      { "name": "Casual Player", "ranks": ["common"], "personalities": ["normal"] },
+      { "name": "Timid Tourist", "ranks": ["common"], "personalities": ["timid"] },
+      { "name": "Common Mystery", "ranks": ["common"], "personalities": [null] }
+    ],
+    "2": [
+      { "name": "The Neighbors", "ranks": ["common", "common"], "personalities": ["normal", "normal"] },
+      { "name": "Common Wild Duo", "ranks": ["common", "common"], "personalities": [null, null] },
+      { "name": "Standard Mix", "ranks": ["common", "common"], "personalities": ["calculated", "timid"] },
+      { "name": "Common and Random", "ranks": ["common", null], "personalities": [null, null] }
+    ],
+    "3": [
+      { "name": "Friday Night Poker", "ranks": ["common", "common", "common"], "personalities": ["normal", "normal", "normal"] },
+      { "name": "Casual Wild Trio", "ranks": ["common", "common", "common"], "personalities": [null, null, null] },
+      { "name": "The Safety First", "ranks": ["common", "common", "common"], "personalities": ["timid", "timid", "timid"] },
+      { "name": "Common Random Mix", "ranks": ["common", null, null], "personalities": [null, null, null] },
+      { "name": "Casual Crowd", "ranks": ["common", "common", "trash"], "personalities": ["normal", "station", "station"] }
+    ]
+  },
+  "trash": {
+    "1": [
+      { "name": "Easy Target", "ranks": ["trash"], "personalities": ["timid"] },
+      { "name": "Calling Station", "ranks": ["trash"], "personalities": ["station"] },
+      { "name": "Trash Mystery", "ranks": ["trash"], "personalities": [null] }
+    ],
+    "2": [
+      { "name": "Fish Market", "ranks": ["trash", "trash"], "personalities": ["station", "station"] },
+      { "name": "The Victims", "ranks": ["trash", "trash"], "personalities": ["timid", "timid"] },
+      { "name": "Trash Wild Duo", "ranks": ["trash", "trash"], "personalities": [null, null] }
+    ],
+    "3": [
+      { "name": "The Bottom Dwellers", "ranks": ["trash", "trash", "trash"], "personalities": ["timid", "station", "normal"] },
+      { "name": "Trash Wild Trio", "ranks": ["trash", "trash", "trash"], "personalities": [null, null, null] },
+      { "name": "Whale Watching", "ranks": ["trash", "trash", "trash"], "personalities": ["station", "station", "station"] },
+      { "name": "Panic at the Table", "ranks": ["trash", "trash", "trash"], "personalities": ["timid", "timid", "station"] },
+      { "name": "Total Chaos", "ranks": [null, null, null], "personalities": [null, null, null] }
+    ]
+  }
+}

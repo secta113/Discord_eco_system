@@ -1,0 +1,265 @@
+{
+  "ranks": {
+    "D": {
+      "name": "Rank D",
+      "stats": {
+        "hp": [
+          80,
+          120
+        ],
+        "atk": [
+          40,
+          60
+        ],
+        "defense": [
+          30,
+          50
+        ],
+        "eva": [
+          8,
+          15
+        ],
+        "spd": [
+          10,
+          20
+        ]
+      },
+      "forbidden_depth": 0,
+      "reward_base": 5000,
+      "exp_mult": 0.5,
+      "description": "初心者向けの安全な区域。リスクは低いが、成長も緩やか。",
+      "maps": [
+        {
+          "id": "meadow_d",
+          "name": "陽だまりの空き地",
+          "attribute": "grass",
+          "emoji": "🌿",
+          "description": "近所の子供も遊ぶ静かな空き地。弱い草属性が潜む。"
+        },
+        {
+          "id": "puddle_d",
+          "name": "汚れた水たまり",
+          "attribute": "water",
+          "emoji": "💧",
+          "description": "雨上がりの路上。小さな水属性のドブモンが跳ねている。"
+        },
+        {
+          "id": "incinerator_d",
+          "name": "錆びついた焼却炉",
+          "attribute": "fire",
+          "emoji": "🔥",
+          "description": "公園の隅にある古い焼却炉。わずかに熱気を帯びている。"
+        }
+      ]
+    },
+    "C": {
+      "name": "Rank C",
+      "stats": {
+        "hp": [
+          150,
+          250
+        ],
+        "atk": [
+          80,
+          120
+        ],
+        "defense": [
+          60,
+          100
+        ],
+        "eva": [
+          20,
+          40
+        ],
+        "spd": [
+          30,
+          50
+        ]
+      },
+      "forbidden_depth": 0,
+      "reward_base": 10000,
+      "exp_mult": 1.0,
+      "description": "一般的な野生の怒武者が生息する区域。",
+      "maps": [
+        {
+          "id": "forest_c",
+          "name": "鬱蒼とした森",
+          "attribute": "grass",
+          "emoji": "🌳",
+          "description": "光が遮られた古い森。野生の咆哮が聞こえる。"
+        },
+        {
+          "id": "river_c",
+          "name": "澱んだ下水道",
+          "attribute": "water",
+          "emoji": "🐀",
+          "description": "都市の裏側を流れる水路。冷たい水属性が回遊している。"
+        },
+        {
+          "id": "factory_c",
+          "name": "放棄された溶接場",
+          "attribute": "fire",
+          "emoji": "🏭",
+          "description": "かつて火花が散っていた廃工場。今も床が熱を放っている。"
+        }
+      ]
+    },
+    "B": {
+      "name": "Rank B",
+      "stats": {
+        "hp": [
+          400,
+          600
+        ],
+        "atk": [
+          200,
+          300
+        ],
+        "defense": [
+          150,
+          250
+        ],
+        "eva": [
+          50,
+          80
+        ],
+        "spd": [
+          60,
+          100
+        ]
+      },
+      "forbidden_depth": 1,
+      "reward_base": 30000,
+      "exp_mult": 3.0,
+      "description": "手強い個体が潜む区域。十分な育成が必要。",
+      "maps": [
+        {
+          "id": "jungle_b",
+          "name": "食人草の密林",
+          "attribute": "grass",
+          "emoji": "🌿",
+          "description": "足を踏み入れた者を飲み込む凶暴な植物群。強靭な草属性が支配する。"
+        },
+        {
+          "id": "lake_b",
+          "name": "沈黙の廃湖",
+          "attribute": "water",
+          "emoji": "🌫️",
+          "description": "深い霧に包まれた湖。巨大な水属性の影が底を泳いでいる。"
+        },
+        {
+          "id": "volcano_b",
+          "name": "溶岩の割れ目",
+          "attribute": "fire",
+          "emoji": "🌋",
+          "description": "灼熱のガスが噴き出す大地の亀裂。怒れる火属性の領域。"
+        }
+      ]
+    },
+    "A": {
+      "name": "Rank A",
+      "stats": {
+        "hp": [
+          800,
+          1200
+        ],
+        "atk": [
+          400,
+          600
+        ],
+        "defense": [
+          300,
+          500
+        ],
+        "eva": [
+          100,
+          150
+        ],
+        "spd": [
+          120,
+          180
+        ]
+      },
+      "forbidden_depth": 3,
+      "reward_base": 80000,
+      "exp_mult": 8.0,
+      "description": "生命の危険を伴う未踏領域。莫大な報酬が得られる。",
+      "maps": [
+        {
+          "id": "garden_a",
+          "name": "狂い咲く極楽浄土",
+          "attribute": "grass",
+          "emoji": "🥀",
+          "description": "あまりに美しいがゆえに猛毒を放つ花園。超級の草属性が生息する。"
+        },
+        {
+          "id": "abyss_a",
+          "name": "光なき深海溝",
+          "attribute": "water",
+          "emoji": "👁️",
+          "description": "水圧と暗闇が全てを押し潰す深海。古の化け物級が潜む。"
+        },
+        {
+          "id": "hellfire_a",
+          "name": "地獄の業火",
+          "attribute": "fire",
+          "emoji": "🔱",
+          "description": "魂さえも焼き尽くす白熱の炎。火属性の修羅たちが集う。"
+        }
+      ]
+    },
+    "S": {
+      "name": "Rank S",
+      "stats": {
+        "hp": [
+          2000,
+          3000
+        ],
+        "atk": [
+          1000,
+          1500
+        ],
+        "defense": [
+          800,
+          1200
+        ],
+        "eva": [
+          200,
+          300
+        ],
+        "spd": [
+          250,
+          400
+        ]
+      },
+      "forbidden_depth": 5,
+      "reward_base": 250000,
+      "exp_mult": 25.0,
+      "description": "特異点の中心地。遭遇すること自体が絶望的な伝説の領域。",
+      "maps": [
+        {
+          "id": "worldtree_s",
+          "name": "世界樹の頂",
+          "attribute": "grass",
+          "emoji": "🌟",
+          "description": "世界の根幹を成す巨木の頂き。神格化した草属性が降臨する。"
+        },
+        {
+          "id": "oblivion_s",
+          "name": "忘却の特異海",
+          "attribute": "water",
+          "emoji": "🌀",
+          "description": "時間と空間が歪んだ海。概念としての水属性が形を成している。"
+        },
+        {
+          "id": "sun_s",
+          "name": "太陽の核",
+          "attribute": "fire",
+          "emoji": "☀️",
+          "description": "万物の源たる星の中心。あらゆる存在を無に帰す火の化身が座す。"
+        }
+      ]
+    }
+  },
+  "disadvantage_bonus": 0.5
+}

@@ -1,0 +1,50 @@
+[project]
+name = "Discord_eco_system"
+version = "0.1.0"
+dependencies = [
+    "discord.py",
+    "pydantic",
+    "python-dotenv",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["scratch"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "C90", # mccabe complexity
+]
+ignore = [
+    "E501", # line too long (handled by formatter)
+    "B904", # raise from e
+    "E722", # bare except
+    "F401", # unused import
+    "F841", # unused variable
+    "E402", # module level import
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 20
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+markers = [
+    "dobumon: tests related to dobumon system",
+    "poker: tests related to poker system",
+    "blackjack: tests related to blackjack system",
+    "economy: tests related to economy and wallet system",
+    "integration: tests for discord cogs or multi-service interaction",
+    "slow: long-running tests or simulations",
+]
