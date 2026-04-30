@@ -1,9 +1,6 @@
-from typing import Optional
-
 import discord
 
 from core.economy import wallet
-from core.utils.logger import Logger
 from core.utils.time_utils import get_jst_today
 from logic.dobumon.core.dob_exceptions import (
     DobumonError,
@@ -13,9 +10,6 @@ from logic.dobumon.core.dob_exceptions import (
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.dob_battle.dob_engine import BattleEngine
-from logic.dobumon.dob_views import (
-    DobumonFormatter,
-)
 from logic.dobumon.dob_views.dob_battle import (
     BattleAutoView,
     ChallengeView,

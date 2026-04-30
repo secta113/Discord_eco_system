@@ -1,9 +1,6 @@
-from typing import Dict, Optional, Tuple
-
-from core.utils.logger import Logger
 from core.utils.time_utils import get_jst_today
 from logic.dobumon.core.dob_exceptions import DobumonError, DobumonNotFoundError
-from logic.dobumon.core.dob_models import Dobumon
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.training import (
     TrainingEngine,
     check_and_learn_skill,
@@ -61,10 +58,7 @@ class TrainingHandler:
 
         self.manager.save_dobumon(dobu)
 
-        Logger.info(
-            "Dobumon",
-            f"Menu Train: {dobu.name} ({menu_key}) - Gains:{result['gains']}, Alive:{dobu.is_alive}",
-        )
+        DobumonLogger.training(dobu, menu_key, result.get("gains"), dobu.is_alive)
 
         final_result = result.copy()
         final_result.update(update_info)

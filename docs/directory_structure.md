@@ -101,6 +101,7 @@
 │   │   │   ├── dob_market_service.py— マーケット（売買）サービス
 │   │   │   ├── dob_buy_service.py   — 購入処理専用サービス
 │   │   │   ├── dob_models.py        — データモデル (DobumonData 等)
+│   │   │   ├── dob_logger.py        — ログ出力（アクション・スペック）の一元管理
 │   │   │   ├── dob_training_service.py — トレーニングサービスファサード
 │   │   │   └── dob_traits.py        — 特性（トレイト）定義・効果計算
 │   │   ├── dob_battle/          — 戦闘計算パッケージ

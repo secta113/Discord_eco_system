@@ -1,5 +1,5 @@
 import random
-from typing import Dict, Optional
+from typing import Dict
 
 from logic.dobumon.core.dob_exceptions import DobumonNotFoundError
 from logic.dobumon.core.dob_factory import DobumonFactory

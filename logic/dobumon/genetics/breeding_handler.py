@@ -1,7 +1,7 @@
 from typing import Dict
 
-from core.utils.logger import Logger
 from logic.dobumon.core.dob_exceptions import DobumonError, DobumonNotFoundError
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.genetics.dob_breeders import BreedingFactory
 
@@ -68,10 +68,7 @@ class BreedingHandler:
         self.manager.save_dobumon(p2)
         self.manager.save_dobumon(child)
 
-        Logger.info(
-            "Dobumon",
-            f"Breed Success: Parent1={p1.name} Parent2={p2.name} -> Child={child.name} ({child.dobumon_id})",
-        )
+        DobumonLogger.genetics(child, context="Breeding", p1_name=p1.name, p2_name=p2.name)
 
         return {
             "success": True,

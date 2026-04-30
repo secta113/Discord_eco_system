@@ -1,10 +1,10 @@
 import datetime
 import random
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from core.economy import wallet
-from core.utils.logger import Logger
 from logic.dobumon.core.dob_factory import DobumonFactory
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.core.dob_models import Dobumon
 
@@ -157,13 +157,7 @@ class DobumonBuyService:
         )
         self.manager.save_dobumon(dobu)
 
-        # 6. 購入制限データの更新
-        self._update_buy_limit_data(user_id, shop_id)
-
-        Logger.info(
-            "Dobumon",
-            f"User {user_id} bought Dobumon from {shop_id}: {name} (IV Avg: {sum(dobu.iv.values()) / 5:.2f})",
-        )
+        DobumonLogger.action(str(user_id), "purchased", name, f"from '{shop_id}'")
         return dobu
 
     def _update_buy_limit_data(self, user_id: int, shop_id: str):

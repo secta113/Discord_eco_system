@@ -1,11 +1,10 @@
 import random
 import traceback
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Optional, Tuple
 
 from core.economy import wallet
-from core.handlers.storage import IDobumonRepository
 from core.utils.logger import Logger
-from logic.dobumon.core.dob_exceptions import DobumonError, DobumonNotFoundError
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.dob_shop.dob_items import ShopItem, get_item_by_id
@@ -94,8 +93,8 @@ class DobumonShopService:
             if dobu:
                 self.manager.save_dobumon(dobu)
 
-            Logger.info(
-                "Shop", f"Purchase Succeeded: User:{user_id} Item:{item_id} Target:{dobumon_id}"
+            DobumonLogger.shop(
+                "Purchase Succeeded", f"User:{user_id} Item:{item_id} Target:{dobumon_id}"
             )
             return True, msg
         except Exception as e:

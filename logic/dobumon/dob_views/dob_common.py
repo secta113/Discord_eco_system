@@ -5,11 +5,6 @@ import discord
 if TYPE_CHECKING:
     from logic.dobumon.core.dob_models import Dobumon
 
-from core.utils.logger import Logger
-from logic.dobumon.core.dob_exceptions import DobumonError
-
-from .dob_formatter import DobumonFormatter
-
 
 class DobumonSelect(discord.ui.Select):
     """

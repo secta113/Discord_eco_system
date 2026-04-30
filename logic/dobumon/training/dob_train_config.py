@@ -1,5 +1,3 @@
-from typing import Dict, Tuple
-
 # 練習メニュー定義
 # Weight: 相対的な上昇比率 (負の値は減少)
 # Fatigue: HP減少割合 (0.01 = 1%)

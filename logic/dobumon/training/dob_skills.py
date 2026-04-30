@@ -2,8 +2,8 @@ import random
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from core.utils.logger import Logger
 from logic.dobumon.core.dob_exceptions import DobumonError
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
 
 
@@ -94,7 +94,8 @@ def check_and_learn_skill(dobu: Dobumon) -> Optional[str]:
                 "is_named": False,
             }
         )
-        Logger.info("Dobumon", f"{dobu.name} learned a new skill: {new_skill.default_name}")
+
+        DobumonLogger.skill(dobu, "learned a new skill", new_skill.default_name)
         return new_skill.default_name
     return None
 

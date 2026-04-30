@@ -1,11 +1,11 @@
 import discord
 
 from core.economy import wallet
-from core.utils.logger import Logger
 from logic.dobumon.core.dob_exceptions import (
     DobumonExecutionError,
     DobumonNotFoundError,
 )
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.core.dob_models import Dobumon
 
@@ -66,10 +66,7 @@ class DobumonMarketService:
         else:
             await interaction.response.send_message(embed=embed)
 
-        Logger.info(
-            "Dobumon",
-            f"User {interaction.user.display_name} sold {dobumon_id} ({dobu.name}) for {price} pts",
-        )
+        DobumonLogger.market(interaction.user.display_name, "sold", dobu, price)
 
     async def execute_rename_skill(
         self, interaction: discord.Interaction, dobumon_id: str, slot: int, new_name: str
@@ -88,7 +85,7 @@ class DobumonMarketService:
             await interaction.followup.send(embed=embed, ephemeral=True)
         else:
             await interaction.response.send_message(embed=embed, ephemeral=True)
-        Logger.info(
-            "Dobumon",
-            f"User {interaction.user.display_name} renamed skill of {dobumon_id} to {new_name}",
+
+        DobumonLogger.action(
+            interaction.user.display_name, "renamed skill of", dobumon_id, f"to '{new_name}'"
         )

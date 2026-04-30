@@ -1,7 +1,7 @@
 import random
 import uuid
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.core.dob_traits import TraitRegistry

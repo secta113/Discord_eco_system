@@ -1,8 +1,8 @@
 import random
 import uuid
-from typing import Dict, List, Optional
+from typing import Dict, List
 
-from core.utils.logger import Logger
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.training.dob_skills import SKILL_TEMPLATES
 
@@ -102,10 +102,7 @@ class DobumonFactory:
         )
         dobu.max_lifespan = dobu.lifespan  # 確定した寿命をコピー
 
-        Logger.info(
-            "Dobumon",
-            f"Factory Created: {name} ({dobu.attribute}) for user:{owner_id} Source:{source}",
-        )
+        DobumonLogger.genetics(dobu, context="Factory")
         return dobu
 
     @staticmethod

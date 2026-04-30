@@ -1,5 +1,5 @@
 import random
-from typing import Dict, List
+from typing import Dict
 
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.core.dob_traits import TraitRegistry

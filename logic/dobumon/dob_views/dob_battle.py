@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from logic.dobumon.core.dob_manager import DobumonManager
     from logic.dobumon.core.dob_models import Dobumon
 
-from core.utils.logger import Logger
+from logic.dobumon.core.dob_logger import DobumonLogger
 from managers.manager import game_manager
 
 from .dob_common import DobumonBaseView, DobumonSelect
@@ -186,8 +186,8 @@ class ChallengeView(DobumonBaseView):
                 await self.initial_interaction.edit_original_response(embed=embed, view=None)
             except:
                 pass
-            Logger.info(
-                "Dobumon", f"Challenge timed out for channel {self.initial_interaction.channel_id}"
+            DobumonLogger.battle(
+                "Challenge timed out", f"Channel {self.initial_interaction.channel_id}"
             )
 
 
@@ -319,6 +319,7 @@ class BattleAutoView(DobumonBaseView):
         self._battle_ended = True
         if self.channel_id:
             game_manager.end_session(self.channel_id)
-        Logger.info("Dobumon", f"Battle visualization timed out (Channel: {self.channel_id}).")
+
+        DobumonLogger.battle("Visualization timed out", f"Channel: {self.channel_id}")
         if self._task:
             self._task.cancel()

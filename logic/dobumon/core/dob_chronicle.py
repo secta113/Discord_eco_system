@@ -2,7 +2,7 @@ import random
 from typing import Dict
 
 from core.handlers.storage import IDobumonRepository
-from core.utils.logger import Logger
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
 
 
@@ -35,10 +35,8 @@ class DobumonChronicle:
             old_life = dobu.lifespan
 
             dobu.lifespan = max(0.0, dobu.lifespan - (1.0 * consumption_mod))
-            Logger.info(
-                "Chronicle",
-                f"Aging [ {dobu.name} ]: {old_life:.2f} -> {dobu.lifespan:.2f} (mod: {consumption_mod:.2f})",
-            )
+
+            DobumonLogger.aging(dobu, old_life, dobu.lifespan, consumption_mod)
 
             # 突然死判定
             dead = False

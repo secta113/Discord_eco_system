@@ -3,8 +3,6 @@ from discord import ui
 
 from core.economy import wallet
 from core.ui.view_base import BaseModal
-from core.utils.logger import Logger
-from logic.dobumon.core.dob_exceptions import DobumonInsufficientPointsError
 
 from .dob_common import DobumonBaseView
 from .dob_formatter import DobumonFormatter

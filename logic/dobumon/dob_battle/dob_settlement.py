@@ -1,7 +1,9 @@
 from typing import Dict, Optional
 
-from core.utils.logger import Logger
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
+from logic.dobumon.core.dob_traits import TraitRegistry
+from logic.dobumon.training import WildGrowthEngine
 
 
 class BattleSettlementManager:
@@ -49,9 +51,8 @@ class BattleSettlementManager:
 
         winner.win_count += 1
 
-        Logger.info(
-            "Dobumon",
-            f"Settled PvP Battle: Winner={winner.name}({winner.dobumon_id}) Loser={loser.name}({loser.dobumon_id}) Reward={reward}",
+        DobumonLogger.battle(
+            "Settled PvP", f"Winner={winner.name} vs Loser={loser.name} | Reward={reward}"
         )
 
         return {
@@ -80,9 +81,6 @@ class BattleSettlementManager:
             player_dobu.win_count += 1
             reward = BattleSettlementManager.WILD_BATTLE_REWARD
 
-            from logic.dobumon.core.dob_traits import TraitRegistry
-            from logic.dobumon.training import WildGrowthEngine
-
             for t in player_dobu.traits:
                 _, reward = TraitRegistry.get(t).on_combat_reward(0.0, reward)
             reward = int(reward)
@@ -102,9 +100,8 @@ class BattleSettlementManager:
             # [REFACTORED] Manager.handle_death 経由で処理するため、ここでの die() は削除
             player_dobu.health = player_dobu.hp  # [DEBUG]
 
-            Logger.info(
-                "Dobumon",
-                f"Settled Wild Battle (LOSS): Player={player_dobu.name}({player_dobu.dobumon_id}) Winner=Wild({wild_dobu_name})",
+            DobumonLogger.battle(
+                "Settled Wild (LOSS)", f"Player={player_dobu.name} vs Wild({wild_dobu_name})"
             )
             return {
                 "success": True,

@@ -1,12 +1,12 @@
 import discord
 
 from core.economy import wallet
-from core.utils.logger import Logger
 from logic.dobumon.core.dob_exceptions import (
     DobumonExecutionError,
     DobumonInsufficientPointsError,
     DobumonNotFoundError,
 )
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.dob_views import (
     DobumonFormatter,
@@ -58,7 +58,4 @@ class DobumonTrainingService:
         else:
             await interaction.response.send_message(embed=embed, view=view)
 
-        Logger.info(
-            "Dobumon",
-            f"User {interaction.user.display_name} trained {dobumon_id} ({menu}) - Success: {success}",
-        )
+        DobumonLogger.action(interaction.user.display_name, "trained", dobu.name, f"on '{menu}'")

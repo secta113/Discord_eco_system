@@ -1,8 +1,8 @@
 import math
 import random
-from typing import Dict, List, Optional
+from typing import Dict
 
-from core.utils.logger import Logger
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.dob_battle.dob_calculator import BattleCalculator
 from logic.dobumon.training import get_skill_template
@@ -51,11 +51,9 @@ class BattleEngine:
         hp1 = self.dobu1.health if self.dobu1.health > 0 else self.dobu1.hp
         hp2 = self.dobu2.health if self.dobu2.health > 0 else self.dobu2.hp
 
-        Logger.info(
-            "Dobumon", f"Battle Start: {self.dobu1.name} (HP:{hp1}) vs {self.dobu2.name} (HP:{hp2})"
-        )
-
-        # 行動までの待機ゲージ (100で行動可能)
+        DobumonLogger.battle(
+            "Start", f"{self.dobu1.name}(HP:{hp1}) vs {self.dobu2.name}(HP:{hp2})"
+        )  # 行動までの待機ゲージ (100で行動可能)
         timer1 = 100.0 - random.uniform(0, 10)
         timer2 = 100.0 - random.uniform(0, 10)
 

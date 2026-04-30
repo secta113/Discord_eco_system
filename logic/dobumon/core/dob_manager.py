@@ -6,14 +6,14 @@ from core.utils.logger import Logger
 from logic.dobumon.core.dob_admin import DobumonAdminAction
 from logic.dobumon.core.dob_chronicle import DobumonChronicle
 from logic.dobumon.core.dob_constants import MAX_DOBUMON_POSSESSION
-from logic.dobumon.core.dob_exceptions import DobumonError, DobumonNotFoundError
+from logic.dobumon.core.dob_exceptions import DobumonError
 from logic.dobumon.core.dob_factory import DobumonFactory
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
+from logic.dobumon.core.dob_traits import TraitRegistry
 from logic.dobumon.dob_battle.battle_handler import BattleHandler
 from logic.dobumon.dob_battle.wild.wild_handler import WildHandler
 from logic.dobumon.genetics.breeding_handler import BreedingHandler
-
-# ハンドラーのインポート
 from logic.dobumon.training.training_handler import TrainingHandler
 
 # 開発中フラグ: 死亡を無効化する場合は True に設定します
@@ -48,41 +48,29 @@ class DobumonManager:
         """
         # 寿命・加齢による死亡チェック (デバッグモードや特性に関わらず常に死亡)
         is_lifespan_death = any(k in reason for k in ["Lifespan", "Aging"])
+
         if is_lifespan_death:
             dobu.die()
-            Logger.info(
-                "Dobumon",
-                f"Death Occurred (Lifespan/Aging) [ {dobu.name} ] ({dobu.dobumon_id}) - Reason: {reason}",
-            )
+            DobumonLogger.death(dobu, reason)
             return True
 
-        # 特性のチェック: 戦闘での死亡を逃れる特性（不死など）
+        # 特性のチェック
         is_combat_death = any(k in reason for k in ["PvP", "Wild", "Battle"])
         if is_combat_death:
             from logic.dobumon.core.dob_traits import TraitRegistry
 
             if any(TraitRegistry.get(t).modifies_battle_death() for t in dobu.traits):
-                Logger.info(
-                    "Dobumon",
-                    f"Death Prevented by Trait [ {dobu.name} ] ({dobu.dobumon_id}) - Reason: {reason}",
-                )
+                DobumonLogger.death(dobu, reason, is_prevented=True)
                 dobu.health = max(1.0, dobu.health)
                 return False
 
         if DISABLE_DEATH:
-            Logger.info(
-                "Dobumon",
-                f"Death Prevented [ {dobu.name} ] ({dobu.dobumon_id}) - Reason: {reason} (DISABLE_DEATH is True)",
-            )
-            # 死亡はさせないが、HPは1程度にしておく（戦闘不能状態の表現）
+            DobumonLogger.death(dobu, f"{reason} (DISABLE_DEATH)", is_prevented=True)
             dobu.health = max(1.0, dobu.health)
             return False
 
         dobu.die()
-        Logger.info(
-            "Dobumon",
-            f"Death Occurred [ {dobu.name} ] ({dobu.dobumon_id}) - Reason: {reason}",
-        )
+        DobumonLogger.death(dobu, reason)
         return True
 
     def create_dobumon(

@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - **アセットマネジメントの最適化**: `CardAssetManager` によるトランプ画像の動的合成（Dynamic Synthesis）を導入。52枚の個別画像を読み込む代わりにパーツから生成することで、メモリ消費を劇的に削減。
 - **高度な遺伝アルゴリズム**: 「Anti-Taboo」と「Singularity」の優先順位（Antinomy > Singularity > Anti-Taboo）を確立。遺伝の安定性と希少性を両立。
 - **ショップ・エコシステム**: 「エリート・シンジケート」限定の変異ボーナスなど、ショップごとの特色あるロジックを実装。
+- **ログ集約と専用ロガーの導入**: `DobumonLogger` クラスを新設し、個体のスペック（遺伝情報）とユーザーアクション（操作履歴）を分離して記録する仕組みを導入。システム全体のトレーサビリティを向上。
 
 ### Fixed
 - ポーカーの盤面描画における座標の微調整と、フォントマネージャーの統合。

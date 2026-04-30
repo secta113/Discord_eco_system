@@ -1,11 +1,11 @@
 import discord
 
 from core.economy import wallet
-from core.utils.logger import Logger
 from logic.dobumon.core.dob_exceptions import (
     DobumonExecutionError,
     DobumonInsufficientPointsError,
 )
+from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.dob_views import (
     DobumonFormatter,
@@ -77,7 +77,7 @@ class DobumonBreedingService:
         status_embed = DobumonFormatter.format_status_embed(child, is_owner=True)
         status_embed.title = f"🐣 {child.name} の素質を確認しました"
         await interaction.followup.send(embed=status_embed, ephemeral=True)
-        Logger.info(
-            "Dobumon",
-            f"User {interaction.user.display_name} bred: {p1_id} + {p2_id} -> {child.name}",
+
+        DobumonLogger.action(
+            interaction.user.display_name, "bred", f"{p1_name} + {p2_name}", f"-> {child.name}"
         )
