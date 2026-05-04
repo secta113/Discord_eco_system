@@ -4,6 +4,7 @@ from typing import Dict, List
 
 from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
+from logic.dobumon.genetics.dob_mutation import MutationEngine
 from logic.dobumon.training.dob_skills import SKILL_TEMPLATES
 
 
@@ -63,17 +64,7 @@ class DobumonFactory:
 
         # 強制突然変異 (ショップの特典など)
         if force_mutation:
-            # growth 遺伝子を希少種に変異させる
-            from logic.dobumon.genetics.dob_genetics_constants import GeneticConstants
-
-            rare_alleles = [
-                a
-                for a in GeneticConstants.TRAIT_EFFECTS
-                if a not in ["early", "late", "hardy", "frail", "stable", "burst", "aesthetic"]
-                and "forbidden" not in a
-            ]
-            if rare_alleles:
-                genotype["growth"] = [random.choice(rare_alleles), "r"]
+            MutationEngine.apply_mutation(genotype)
 
         traits = MendelEngine.resolve_traits(genotype, {})
 

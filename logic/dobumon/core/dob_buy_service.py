@@ -156,6 +156,7 @@ class DobumonBuyService:
             force_mutation=preview_data["has_mutation"],
         )
         self.manager.save_dobumon(dobu)
+        self._update_buy_limit_data(user_id, shop_id)
 
         DobumonLogger.action(str(user_id), "purchased", name, f"from '{shop_id}'")
         return dobu

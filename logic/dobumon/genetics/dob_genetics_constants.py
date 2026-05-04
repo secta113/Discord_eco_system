@@ -127,9 +127,9 @@ TRAIT_EFFECTS: Dict[str, Dict[str, Any]] = {
 # 突然変異で発生する希少遺伝子のスロットと出現候補
 MUTATION_GENE_POOL: Dict[str, List[str]] = {
     "growth": ["unlimited", "parasitic"],
-    "vitality": ["undead", "chimera", "blue_blood"],
+    "vitality": ["undead", "chimera", "crystalized"],
     "potential": ["supernova", "singularity", "anti_taboo"],
-    "body": ["gold_horn", "red_back", "odd_eye", "crystalized", "glass_blade"],
+    "body": ["gold_horn", "red_back", "odd_eye", "blue_blood", "glass_blade"],
 }
 
 
