@@ -1,7 +1,7 @@
 # ディレクトリ構造 (directory_structure.md)
 
-> **最終更新**: 2026-05-01  
-> *v2.2 サービス完全分割・動的アセット合成の反映、および CHANGELOG.md 追記*
+> **最終更新**: 2026-05-04  
+> *v2.3 遺伝システム刷新（MutationEngine導入、遺伝子座固定、マッピング修正）の反映*
 
 ---
 
@@ -140,7 +140,8 @@
 │   │   │   ├── __init__.py
 │   │   │   ├── breeding_handler.py      — 配合リクエストのハンドラ
 │   │   │   ├── dob_breeders.py          — 配合ロジック本体（遺伝計算）
-│   │   │   ├── dob_genetic_fixer.py     — 遺伝修正処理
+│   │   │   ├── dob_mutation.py          — MutationEngine: 突然変異・固定管理
+│   │   │   ├── dob_migration_v2_fix_loci.py — 遺伝子座修正マイグレーション
 │   │   │   ├── dob_genetics_constants.py— 遺伝関連定数・確率テーブル
 │   │   │   ├── dob_kinship.py           — 血縁関係・近親交配判定
 │   │   │   ├── dob_mendel.py            — メンデル型遺伝計算
