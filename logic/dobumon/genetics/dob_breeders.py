@@ -6,9 +6,9 @@ from typing import Dict, List
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.core.dob_traits import TraitRegistry
 from logic.dobumon.dob_shop.dob_shop_effect_manager import DobumonShopEffectManager
-from logic.dobumon.genetics.dob_genetic_fixer import GeneticFixer
 from logic.dobumon.genetics.dob_kinship import KinshipLogic
 from logic.dobumon.genetics.dob_mendel import MendelEngine
+from logic.dobumon.genetics.dob_mutation import MutationEngine
 from logic.dobumon.genetics.dob_taboo import TabooLogic
 
 
@@ -237,11 +237,7 @@ class BaseBreeder(IBreeder):
         super_mutation_rate += bonuses["mutation_chance_delta"]
 
         if random.random() < super_mutation_rate:
-            slot = random.choice(list(GeneticConstants.MUTATION_GENE_POOL.keys()))
-            mutation_allele = random.choice(GeneticConstants.MUTATION_GENE_POOL[slot])
-            idx = random.randint(0, 1)
-
-            child_geno[slot][idx] = mutation_allele
+            MutationEngine.apply_mutation(child_geno)
 
         return child_geno
 
@@ -319,7 +315,7 @@ class BaseBreeder(IBreeder):
         )
 
         # 3.6 伝承遺伝（Fixation）の適用: 特定形質が発現した場合、遺伝子座をホモ接合に固定する
-        GeneticFixer.fixate_genotype(child_geno, traits)
+        MutationEngine.fixate_genotype(child_geno, traits)
 
         # 禁忌深度の真の計算（禁断時は加算ボーナス）
         child_depth = (

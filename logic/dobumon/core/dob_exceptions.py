@@ -31,6 +31,12 @@ class DobumonStatusError(DobumonError):
     pass
 
 
+class DobumonGeneticsError(DobumonError):
+    """遺伝子操作や突然変異に関するロジックエラー"""
+
+    pass
+
+
 class DobumonExecutionError(DobumonError):
     """アクションの実行自体に失敗した場合のエラー"""
 

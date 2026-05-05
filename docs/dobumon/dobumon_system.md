@@ -70,6 +70,6 @@
 
 ## **4. 技術設計**
 
-- **GAエンジン**: `logic/dobumon/dob_genetics.py` および **`logic/dobumon/dob_taboo_logic.py`** に遺伝・禁忌ロジックをカプセル化。後者は戦闘バフ、不妊フラグの上書き制御を一元管理します。
+- **GAエンジン**: `logic/dobumon/genetics/dob_mendel.py` および **`logic/dobumon/genetics/dob_mutation.py` (MutationEngine)** に遺伝・突然変異・固定ロジックをカプセル化。後者は強力な形質のホモ接合化を一元管理します。
 - **永続化**: SQLite3 と バリデーションレイヤー (`DobumonSchema`) によるデータ整合性の担保。
 - **拡張性**: 世代数 (generation) や血統フラグ (genetics) を保持し、将来的な複雑な家系図や、禁忌深度によるステータスへの動的介入
