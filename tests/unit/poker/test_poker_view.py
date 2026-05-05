@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import discord
 import pytest
 
-from logic.poker.pk_view import PokerView
+from logic.poker.ui.pk_view import PokerView
 
 
 @pytest.fixture

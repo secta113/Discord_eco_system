@@ -1,2 +1,2 @@
 from .pk_service import TexasPokerService
-from .pk_view import PokerView
+from .ui.pk_view import PokerView

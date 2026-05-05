@@ -4,10 +4,10 @@ import io
 import discord
 
 from core.ui.view_base import BaseView
-
-from .bj_canvas import BlackjackCanvas
-from .bj_deck import Deck
-from .bj_service import BlackjackService
+from core.utils.formatters import f_pts
+from logic.blackjack.bj_canvas import BlackjackCanvas
+from logic.blackjack.bj_deck import Deck
+from logic.blackjack.bj_service import BlackjackService
 
 
 class BlackjackBaseView(BaseView):
@@ -282,7 +282,7 @@ class BlackjackView(BlackjackBaseView):
             d_score = Deck.get_score(self.session.dealer_hand)
             res_text = f"ディーラーのスコア: **{d_score}**\n\n"
             for r in results:
-                res_text += f"**{r['name']}** (計: {r['total_payout']}pts):\n"
+                res_text += f"**{r['name']}** (計: {f_pts(r['total_payout'])}):\n"
                 for hr in r["hands"]:
                     res_text += f"> {hr['result']}\n"
                 res_text += "\n"

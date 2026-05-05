@@ -7,13 +7,13 @@ import discord
 from discord import ui
 
 from core.ui.view_base import BaseView
+from core.utils.formatters import f_bold_pts, f_commas, f_pts
 from core.utils.logger import Logger
-
-from .pk_canvas import PokerCanvas
-from .pk_deck import PokerDeck
-from .pk_exceptions import PokerError, PokerTurnError
-from .pk_formatter import PokerFormatter
-from .pk_service import TexasPokerService
+from logic.poker.pk_canvas import PokerCanvas
+from logic.poker.pk_deck import PokerDeck
+from logic.poker.pk_exceptions import PokerError, PokerTurnError
+from logic.poker.pk_formatter import PokerFormatter
+from logic.poker.pk_service import TexasPokerService
 
 
 class PokerBaseView(BaseView):
@@ -152,9 +152,9 @@ class PokerView(PokerBaseView):
 
         # 基本情報
         status_embed.add_field(name="📍 フェーズ", value=f"**{phase_label}**", inline=True)
-        status_embed.add_field(name="💰 総ポット", value=f"**{self.session.pot}** pts", inline=True)
+        status_embed.add_field(name="💰 総ポット", value=f_bold_pts(self.session.pot), inline=True)
         status_embed.add_field(
-            name="📈 最高ベット", value=f"{self.session.current_max_bet} pts", inline=True
+            name="📈 最高ベット", value=f_pts(self.session.current_max_bet), inline=True
         )
 
         # プレイヤー一覧
@@ -201,7 +201,7 @@ class PokerView(PokerBaseView):
 
             players_str += (
                 f"{prefix}**{p['name']}**{pos_label}{p_status}\n"
-                f"　 💰 **Stack**: {state.stack} pts | 🎲 **Bet**: {state.current_bet} pts{hand_str}\n"
+                f"　 💰 **Stack**: {f_pts(state.stack)} | 🎲 **Bet**: {f_pts(state.current_bet)}{hand_str}\n"
             )
 
         status_embed.add_field(name=f"👥 参加者 ({num_players}人)", value=players_str, inline=False)
@@ -273,7 +273,7 @@ class PokerView(PokerBaseView):
         # Embedの作成 (手札用)
         embed = discord.Embed(
             title="🃏 あなたの手札",
-            description=f"現在の持ち点 (Stack): **{player.stack}** pts",
+            description=f"現在の持ち点 (Stack): {f_bold_pts(player.stack)}",
             color=discord.Color.blue(),
         )
         embed.set_image(url="attachment://hand.png")
@@ -423,7 +423,7 @@ class PokerView(PokerBaseView):
         if action == "call":
             return "Call"
         if action == "raise":
-            return f"Raise ({amount} pts)"
+            return f"Raise ({f_pts(amount)})"
         if action == "all_in":
             return "All-In"
         if action == "fold":
@@ -435,18 +435,17 @@ class PokerView(PokerBaseView):
         res_text = "🏆 **結果発表** 🏆\n"
         for r in results:
             profit = r.get("profit", 0)
-            profit_str = f"+{profit:,}" if profit > 0 else f"{profit:,}"
-            line = f"**{r['name']}**: {r['hand']} ({profit_str} pts)"
+            line = f"**{r['name']}**: {r['hand']} ({f_pts(profit, signed=True)})"
 
             jp_payout = r.get("jp_payout", 0)
             if jp_payout > 0:
-                line += f" 🎰 (内 JP: +{jp_payout:,} pts)"
+                line += f" 🎰 (内 JP: +{f_pts(jp_payout)})"
 
             res_text += line + "\n"
 
         if rake_amount > 0:
             res_text += (
-                f"\n*※ポットから手数料(Rake 5%)として {rake_amount:,} pts が徴収されました。*"
+                f"\n*※ポットから手数料(Rake 5%)として {f_pts(rake_amount)} が徴収されました。*"
             )
 
         await self.update_display(interaction, res_text, is_game_end=True)

@@ -5,7 +5,7 @@ import pytest
 
 from cogs.games import Games
 from core.economy import wallet
-from logic.match_view import MatchJoinView, MatchResultSelect
+from logic.match.ui.match_view import MatchJoinView, MatchResultSelect
 from managers.manager import game_manager
 
 

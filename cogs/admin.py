@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from core.economy import wallet
 from core.utils.config import START_TIME, VERSION
+from core.utils.formatters import f_commas, f_pts
 from core.utils.time_utils import get_jst_now
 
 
@@ -38,8 +39,7 @@ class Admin(commands.Cog):
 
         lines = []
         for r in reversed(history[-15:]):
-            amount_str = f"+{r['amount']}" if r["amount"] >= 0 else str(r["amount"])
-            lines.append(f"`{r['date']}`: {r['reason']} ({amount_str} pts)")
+            lines.append(f"`{r['date']}`: {r['reason']} ({f_pts(r['amount'], signed=True)})")
 
         embed = discord.Embed(
             title=f"📜 {target.display_name} の履歴", description="\n".join(lines), color=0x3498DB
@@ -62,7 +62,7 @@ class Admin(commands.Cog):
         embed = discord.Embed(title="📊 システムステータス", color=0x2ECC71)
         embed.add_field(name="バージョン", value=VERSION, inline=True)
         embed.add_field(name="起動時間 (Uptime)", value=uptime_str, inline=True)
-        embed.add_field(name="総流通ポイント", value=f"{all_bal:,} pts", inline=False)
+        embed.add_field(name="総流通ポイント", value=f_pts(all_bal), inline=False)
         embed.add_field(
             name="メンテナンスモード",
             value="🔴 ON" if self.bot.maintenance_mode else "🟢 OFF",
@@ -88,7 +88,7 @@ class Admin(commands.Cog):
             played = data.games_played
             max_win = data.max_win_amount
             lines.append(
-                f"**{rank}位**: {name} | {pts:,} pts | {wins}勝/{played}戦 | Max: {max_win:,}"
+                f"**{rank}位**: {name} | {f_pts(pts)} | {wins}勝/{played}戦 | Max: {f_commas(max_win)}"
             )
 
         embed = discord.Embed(
@@ -122,7 +122,7 @@ class Admin(commands.Cog):
 
         embed.add_field(
             name="💰 最多資産王",
-            value=f"**{get_name(top_bal_id)}**\n({all_stats[top_bal_id].balance:,} pts)",
+            value=f"**{get_name(top_bal_id)}**\n({f_pts(all_stats[top_bal_id].balance)})",
             inline=False,
         )
         embed.add_field(
@@ -132,7 +132,7 @@ class Admin(commands.Cog):
         )
         embed.add_field(
             name="💥 最大一撃王",
-            value=f"**{get_name(top_max_id)}**\n({all_stats[top_max_id].max_win_amount:,} pts)",
+            value=f"**{get_name(top_max_id)}**\n({f_pts(all_stats[top_max_id].max_win_amount)})",
             inline=False,
         )
 

@@ -10,7 +10,7 @@ from logic.blackjack.bj_formatter import BlackjackFormatter
 from logic.chinchiro.cc_exceptions import ChinchiroError
 from logic.chinchiro.cc_formatter import ChinchiroFormatter
 from logic.dobumon.core.dob_exceptions import DobumonError
-from logic.dobumon.dob_views import DobumonFormatter
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 from logic.economy.eco_formatter import EconomyFormatter
 from logic.poker.pk_exceptions import PokerError
 from logic.poker.pk_formatter import PokerFormatter

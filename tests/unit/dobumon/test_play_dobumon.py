@@ -13,12 +13,12 @@ from logic.dobumon.core.dob_market_service import DobumonMarketService
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.core.dob_training_service import DobumonTrainingService
 from logic.dobumon.dob_battle.dob_engine import BattleEngine
-from logic.dobumon.dob_views import (
+from logic.dobumon.training import TrainingEngine
+from logic.dobumon.ui import (
     DobumonSellView,
     TrainingResultView,
     TrainingView,
 )
-from logic.dobumon.training import TrainingEngine
 
 
 def setup_test_env(tmp_path):

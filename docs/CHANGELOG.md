@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v2.5] - 2026-05-05
+### Improved
+- **UI ファイルの一元化 (`logic/dobumon/ui/`)**: 3箇所に分散していた Dobumon の View 群（`dob_views/`・`dob_shop/dob_shop_view.py`・`dob_battle/wild/wild_views.py`）を `logic/dobumon/ui/` に統合。`dob_views/` ディレクトリを廃止。
+- **ゲーム UI のサブディレクトリ化**: `blackjack/`・`chinchiro/`・`poker/` の各 View ファイルをそれぞれ `ui/` サブパッケージに移動。ゲームロジックと UI の責務を明確に分離。
+- **`DobumonFormatter` のレイヤー移動**: Embed 生成ロジック `DobumonFormatter` を `dob_views/` から `logic/dobumon/core/dob_formatter.py` に移動し、ロジック層として正しい位置に配置。
+- **Match パッケージの整理**: `logic/match_service.py` と `logic/match_view.py` を `logic/match/` パッケージに統合。サービスと UI を `logic/match/match_service.py` および `logic/match/ui/match_view.py` として整理。
+- **`starter.py` の責務移動**: ゲームフロー制御ロジック `execute_game_start()` を `core/ui/starter.py` から `managers/starter.py` に移動。`core/ui/` は純粋な基底 View（`view_base.py`）のみを保持。
+
+## [v2.4] - 2026-05-05
+### Added
+- **数字フォーマット処理の共通化 (`formatters.py`)**: プロジェクト全体で一貫した数値表示（カンマ区切り、単位付与）を行うための共通ユーティリティを新設。
+- **拡張フォーマット機能**: `f_pts` 関数に `signed`（符号付き表示）および `bold`（太字装飾）オプションを追加し、UIロジックの簡素化を実現。
+- **フォーマッターの単体テスト**: 新設したフォーマット関数の正常動作を検証するためのユニットテストを追加。
+
+### Improved
+- **UI表示の堅牢化**: 各種 View や Cog における手動の数値操作（文字列連結や手動カンマ挿入）を共通関数に置換。
+- **管理コマンドの視認性向上**: `/dd-mod logs` や `/dd-mod winner` などの管理用出力における数値表示を最適化。
+- **ドブモン市場・トレーニングUIの改善**: 売却価格や必要費用の表示に共通フォーマッターを適用し、表記揺れを解消。
+
 ## [v2.3] - 2026-05-04
 ### Added
 - **突然変異エンジン (`MutationEngine`) の新設**: 突然変異の発生と遺伝子座の固定（ホモ接合化）を一元管理するエンジンを導入。

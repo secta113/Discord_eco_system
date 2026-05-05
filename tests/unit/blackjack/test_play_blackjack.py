@@ -6,7 +6,7 @@ import pytest
 from cogs.games import Games
 from core.economy import wallet
 from core.ui.view_base import JoinView
-from logic.blackjack.bj_view import BlackjackView
+from logic.blackjack.ui.bj_view import BlackjackView
 from managers.manager import game_manager
 
 

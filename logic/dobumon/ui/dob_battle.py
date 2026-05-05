@@ -7,11 +7,11 @@ if TYPE_CHECKING:
     from logic.dobumon.core.dob_manager import DobumonManager
     from logic.dobumon.core.dob_models import Dobumon
 
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 from logic.dobumon.core.dob_logger import DobumonLogger
 from managers.manager import game_manager
 
 from .dob_common import DobumonBaseView, DobumonSelect
-from .dob_formatter import DobumonFormatter
 
 
 class DobumonSelectionView(DobumonBaseView):

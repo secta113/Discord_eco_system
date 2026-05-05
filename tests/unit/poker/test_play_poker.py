@@ -6,7 +6,7 @@ import pytest
 from cogs.games import Games
 from core.economy import wallet
 from core.ui.view_base import JoinView
-from logic.poker.pk_view import PokerView
+from logic.poker.ui.pk_view import PokerView
 from managers.manager import game_manager
 
 

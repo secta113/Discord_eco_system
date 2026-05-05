@@ -6,13 +6,13 @@ from logic.dobumon.core.dob_exceptions import (
     DobumonInsufficientPointsError,
     DobumonNotFoundError,
 )
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_manager import DobumonManager
-from logic.dobumon.dob_views import (
-    DobumonFormatter,
+from logic.dobumon.training import TrainingEngine
+from logic.dobumon.ui import (
     TrainingResultView,
 )
-from logic.dobumon.training import TrainingEngine
 
 
 class DobumonTrainingService:

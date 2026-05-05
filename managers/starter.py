@@ -1,10 +1,10 @@
 import discord
 
+from core.utils.formatters import f_pts
 from core.utils.logger import Logger
-from logic.blackjack import BlackjackService, BlackjackView
-from logic.chinchiro import ChinchiroService, ChinchiroView
-from logic.poker.pk_service import TexasPokerService
-from logic.poker.pk_view import PokerView
+from logic.blackjack import BlackjackView
+from logic.chinchiro import ChinchiroView
+from logic.poker import PokerView
 from managers.manager import game_manager
 
 
@@ -74,7 +74,7 @@ async def execute_game_start(interaction: discord.Interaction, session):
             results = session.settle_all()
             res_text = f"ディーラーのスコア: **{d_score}**\n\n"
             for r in results:
-                res_text += f"**{r['name']}** (計: {r['total_payout']}pts):\n"
+                res_text += f"**{r['name']}** (計: {f_pts(r['total_payout'])}):\n"
                 for hr in r["hands"]:
                     res_text += f"> {hr['result']}\n"
                 res_text += "\n"

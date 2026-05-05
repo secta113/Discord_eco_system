@@ -6,7 +6,7 @@ import pytest
 from cogs.games import Games
 from core.economy import wallet
 from core.ui.view_base import JoinView
-from logic.chinchiro.cc_view import ChinchiroView
+from logic.chinchiro.ui.cc_view import ChinchiroView
 from managers.manager import game_manager
 
 

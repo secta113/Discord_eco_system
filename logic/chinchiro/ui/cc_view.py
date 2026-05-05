@@ -1,8 +1,8 @@
 import discord
 
 from core.ui.view_base import BaseView
-
-from .cc_service import ChinchiroService
+from core.utils.formatters import f_bold_pts
+from logic.chinchiro.cc_service import ChinchiroService
 
 
 class ChinchiroBaseView(BaseView):
@@ -62,7 +62,7 @@ class ChinchiroView(ChinchiroBaseView):
 
                 embed = discord.Embed(title="🏆 決着 🏆", color=0xF1C40F)
                 if winner:
-                    embed.description = f"**{winner['name']}** が配当 **{actual_payout} pts** (システムボーナス含む) を総取りしました！"
+                    embed.description = f"**{winner['name']}** が配当 {f_bold_pts(actual_payout)} (システムボーナス含む) を総取りしました！"
                 else:
                     embed.description = "全員役なしのため、ポットは没収されました。"
 

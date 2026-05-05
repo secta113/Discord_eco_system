@@ -1,6 +1,7 @@
 import datetime
 
 from core.economy import wallet
+from core.utils.formatters import f_commas, f_pts
 from core.utils.logger import Logger
 
 from .jackpot import JackpotService
@@ -89,9 +90,9 @@ class BonusService:
 
         dividend_msg = ""
         if overflow_dividend > 0:
-            dividend_msg = f"\n💰 特別給付(JP還元): +{overflow_dividend} pts"
+            dividend_msg = f"\n💰 特別給付(JP還元): {f_pts(overflow_dividend, signed=True)}"
 
         return (
             True,
-            f"デイリーボーナス {total_bonus} pts を支給しました！{dividend_msg}\n({status_msg} / ベンチマーク: {benchmark:.0f} pts)",
+            f"デイリーボーナス {f_pts(total_bonus)} を支給しました！{dividend_msg}\n({status_msg} / ベンチマーク: {f_pts(benchmark)})",
         )

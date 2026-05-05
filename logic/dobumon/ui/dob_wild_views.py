@@ -3,9 +3,8 @@ from typing import Callable, List, Optional
 import discord
 
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.dob_views.dob_common import DobumonBaseView, DobumonSelect
-
-from .wild_config import WildBattleConfig
+from logic.dobumon.dob_battle.wild.wild_config import WildBattleConfig
+from logic.dobumon.ui.dob_common import DobumonBaseView, DobumonSelect
 
 
 class WildBattleWizard(DobumonBaseView):

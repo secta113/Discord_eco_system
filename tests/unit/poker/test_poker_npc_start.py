@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from core.ui.starter import execute_game_start
+from managers.starter import execute_game_start
 
 
 @pytest.mark.asyncio
@@ -23,8 +23,8 @@ async def test_poker_npc_first_turn_triggers_auto_turns():
 
     # Mock View
     with (
-        patch("core.ui.starter.PokerView") as mock_view_cls,
-        patch("core.ui.starter.game_manager.save_session"),
+        patch("managers.starter.PokerView") as mock_view_cls,
+        patch("managers.starter.game_manager.save_session"),
     ):
         mock_view = MagicMock()
         mock_view.session = session

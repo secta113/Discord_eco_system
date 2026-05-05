@@ -2,6 +2,7 @@ import discord
 from discord import ui
 
 from core.ui.view_base import BaseView, JoinView
+from core.utils.formatters import f_pts
 
 
 class MatchJoinView(JoinView):
@@ -103,7 +104,7 @@ class MatchResultSelect(ui.Select):
         winner_member = interaction.guild.get_member(winner_id) if interaction.guild else None
         winner_mention = winner_member.mention if winner_member else f"<@{winner_id}>"
         await interaction.channel.send(
-            f"🏆 【マッチ結果】 勝者: {winner_mention} (配当: {payout} pts)"
+            f"🏆 【マッチ結果】 勝者: {winner_mention} (配当: {f_pts(payout)})"
         )
 
 

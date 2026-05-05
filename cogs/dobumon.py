@@ -10,6 +10,7 @@ from core.handlers.storage import SQLiteDobumonRepository
 from core.ui.view_base import BaseView
 from core.utils.decorators import check_maintenance, defer_response
 from core.utils.font_manager import FontManager
+from core.utils.formatters import f_commas, f_pts
 from core.utils.logger import Logger
 from logic.dobumon.core.dob_battle_service import DobumonBattleService
 from logic.dobumon.core.dob_breeding_service import DobumonBreedingService
@@ -19,25 +20,25 @@ from logic.dobumon.core.dob_exceptions import (
     DobumonInsufficientPointsError,
     DobumonNotFoundError,
 )
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.core.dob_market_service import DobumonMarketService
 from logic.dobumon.core.dob_training_service import DobumonTrainingService
 from logic.dobumon.dob_shop.dob_shop_service import DobumonShopService
-from logic.dobumon.dob_shop.dob_shop_view import DobumonShopView
-from logic.dobumon.dob_views import (
+from logic.dobumon.training import TrainingEngine
+from logic.dobumon.ui import (
     BreedSelectView,
     DobumonBuyView,
-    DobumonFormatter,
     DobumonMapSelectionView,
     DobumonSellView,
     MapSampleBreedView,
     RenameSkillView,
     TrainingView,
 )
-from logic.dobumon.dob_views.dob_battle import BattleAutoView, ChallengeView, DobumonSelectionView
-from logic.dobumon.dob_views.dob_kinship_tree import DobumonKinshipTree
-from logic.dobumon.dob_views.dob_status import StatusSelectionView
-from logic.dobumon.training import TrainingEngine
+from logic.dobumon.ui.dob_battle import BattleAutoView, ChallengeView, DobumonSelectionView
+from logic.dobumon.ui.dob_kinship_tree import DobumonKinshipTree
+from logic.dobumon.ui.dob_shop_view import DobumonShopView
+from logic.dobumon.ui.dob_status import StatusSelectionView
 from logic.economy.status import StatusService
 from managers.manager import game_manager
 
@@ -131,7 +132,9 @@ class DobumonCog(commands.Cog):
         name="dd-dobumon", description="怒武者（ドブモン）関連コマンド"
     )
 
-    @dobumon_group.command(name="buy", description="バイヤーから怒武者を購入します (50,000 pts)")
+    @dobumon_group.command(
+        name="buy", description=f"バイヤーから怒武者を購入します ({f_pts(50000)})"
+    )
     @check_maintenance()
     @defer_response(ephemeral=False)
     async def buy(self, interaction: discord.Interaction):
@@ -148,7 +151,7 @@ class DobumonCog(commands.Cog):
 
         view = DobumonBuyView(interaction.user, self.buy_service)
         embed = view.create_embed()
-        embed.add_field(name="所持金", value=f"{balance:,} pts")
+        embed.add_field(name="所持金", value=f_pts(balance))
 
         await interaction.followup.send(embed=embed, view=view)
         Logger.info("Dobumon", f"User {interaction.user.display_name} opened buy wizard")
@@ -190,7 +193,7 @@ class DobumonCog(commands.Cog):
         await interaction.followup.send(embed=embed, view=view, ephemeral=True)
 
     @dobumon_group.command(
-        name="train", description="怒武者をトレーニングして強化します (500 pts 〜)"
+        name="train", description=f"怒武者をトレーニングして強化します ({f_pts(500)} 〜)"
     )
     @check_maintenance()
     @defer_response(ephemeral=True)
@@ -209,7 +212,7 @@ class DobumonCog(commands.Cog):
         )
         embed = discord.Embed(
             title="🏋️ トレーニング・ウィザード",
-            description="トレーニングする怒武者と項目を選択してください。\n費用: **500 pts 〜** (懐き度により割引あり)",
+            description=f"トレーニングする怒武者と項目を選択してください。\n費用: **{f_pts(500)} 〜** (懐き度により割引あり)",
             color=0x3498DB,
         )
         await interaction.followup.send(embed=embed, view=view, ephemeral=True)
@@ -243,7 +246,7 @@ class DobumonCog(commands.Cog):
         await self.battle_service.execute_challenge(interaction, target)
 
     @dobumon_group.command(
-        name="breed", description="2体の怒武者を交配させ、命を繋ぎます。費用: 20,000 pts"
+        name="breed", description=f"2体の怒武者を交配させ、命を繋ぎます。費用: {f_pts(20000)}"
     )
     @check_maintenance()
     @defer_response(ephemeral=True)
@@ -261,7 +264,7 @@ class DobumonCog(commands.Cog):
         view = BreedSelectView(interaction.user, dobumons, self.breeding_service.execute_breed)
         embed = discord.Embed(
             title="🧬 交配ウィザード",
-            description="交配させる両親を選択してください。\n費用: **20,000 pts**",
+            description=f"交配させる両親を選択してください。\n費用: **{f_pts(20000)}**",
             color=discord.Color.gold(),
         )
         await interaction.followup.send(embed=embed, view=view, ephemeral=True)
