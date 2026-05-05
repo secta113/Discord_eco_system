@@ -69,7 +69,7 @@ class TestSpecialClasses:
         assert base_decay < 0.5
 
         # UnlimitedTraitは1.0以上を保証する
-        unlimited_multiplier = trait.on_growth_multiplier(base_decay)
+        unlimited_multiplier = trait.on_growth_multiplier(sample_dobu, base_decay)
         assert unlimited_multiplier >= 1.0
 
     def test_parasitic_trait_penalizes_training(self):
@@ -78,7 +78,7 @@ class TestSpecialClasses:
         assert isinstance(trait, ParasiticTrait)
 
         base_multiplier = 1.0
-        parasitic_multiplier = trait.on_growth_multiplier(base_multiplier)
+        parasitic_multiplier = trait.on_growth_multiplier(sample_dobu, base_multiplier)
         assert parasitic_multiplier == 0.1
 
     def test_parasitic_trait_boosts_rewards(self):

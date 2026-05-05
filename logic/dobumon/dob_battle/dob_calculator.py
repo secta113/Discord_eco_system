@@ -2,7 +2,7 @@ import random
 
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.dob_shop.dob_shop_effect_manager import DobumonShopEffectManager
-from logic.dobumon.genetics.dob_taboo import TabooLogic
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 
 
 class BattleCalculator:
@@ -17,8 +17,8 @@ class BattleCalculator:
         Base = (Atk * Atk / (Atk + Def)) * (Power / 50)
         """
         # 攻撃者および防御者それぞれの補正を取得
-        a_mods = TabooLogic.get_combat_modifiers(attacker, defender)
-        d_mods = TabooLogic.get_combat_modifiers(defender, attacker)
+        a_mods = BattleCalculator._get_trait_combat_mods(attacker, defender)
+        d_mods = BattleCalculator._get_trait_combat_mods(defender, attacker)
 
         atk = max(1, attacker.atk * a_mods["atk"])
         df = max(1, defender.defense * d_mods["defense"])
@@ -74,8 +74,8 @@ class BattleCalculator:
         速度(spd) と 回避(eva) の比率に基づきます。
         """
         # 攻撃者および防御者それぞれの補正を取得
-        a_mods = TabooLogic.get_combat_modifiers(attacker, defender)
-        d_mods = TabooLogic.get_combat_modifiers(defender, attacker)
+        a_mods = BattleCalculator._get_trait_combat_mods(attacker, defender)
+        d_mods = BattleCalculator._get_trait_combat_mods(defender, attacker)
 
         spd = max(1, attacker.spd * a_mods["spd"])
         eva = max(0, defender.eva * d_mods["eva"])
@@ -104,3 +104,16 @@ class BattleCalculator:
         """
         chance = BattleCalculator.calculate_hit_chance(attacker, defender, skill_accuracy)
         return random.random() < chance
+
+    @staticmethod
+    def _get_trait_combat_mods(subject: Dobumon, opponent: Dobumon) -> dict:
+        """
+        特性による戦闘中のステータス補正を一括計算します。
+        """
+        mods = {"hp": 1.0, "atk": 1.0, "defense": 1.0, "eva": 1.0, "spd": 1.0}
+        for t in subject.traits:
+            t_mods = TraitRegistry.get(t).on_combat_start(subject, opponent)
+            for k, v in t_mods.items():
+                if k in mods:
+                    mods[k] *= v
+        return mods

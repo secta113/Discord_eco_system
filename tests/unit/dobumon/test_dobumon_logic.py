@@ -84,7 +84,7 @@ def test_manager_creation(tmp_path):
 
     assert dobu.name == "ポチ"
     assert dobu.owner_id == 123
-    assert 90 <= dobu.hp <= 110  # 100 * (0.9 ~ 1.1)
+    assert 70 <= dobu.hp <= 135  # IV (0.9 ~ 1.1) * 特性 (early=1.2, late=0.8) で 72 ~ 132
 
 
 def test_manager_persistence(tmp_path):

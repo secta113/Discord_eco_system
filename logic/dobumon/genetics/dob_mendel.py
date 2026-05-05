@@ -1,7 +1,7 @@
 import random
 from typing import Any, Dict, List
 
-from logic.dobumon.core.dob_traits import TraitRegistry
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 
 from .dob_genetics_constants import GeneticConstants
 
@@ -17,6 +17,8 @@ class MendelEngine:
         """減数分裂と受精を行い、両親から1つずつランダムに対立遺伝子を継承します。"""
 
         def mutate_allele(allele: str) -> str:
+            if allele in ["D", "r"]:
+                return allele
             trait_obj = TraitRegistry.get(allele)
             return trait_obj.on_inherit_allele()
 
@@ -36,44 +38,50 @@ class MendelEngine:
     ) -> List[str]:
         """遺伝型（Genotype）から実際に発現する特性名（Phenotype）を解決します。"""
         active_traits = []
-        for key, alleles in genotype.items():
-            definition = GeneticConstants.TRAIT_GENES.get(key)
+        all_mutation_keys = TraitRegistry.get_all_keys()
+
+        # 標準的なアレルの表現型名（early, late 等）のリストを取得
+        # これらは対立遺伝子として genotype に直接入ることは通常ないが、
+        # 万が一入っていた場合に「突然変異」として誤検知されないように除外する。
+        standard_phenotype_names = []
+        for def_dict in GeneticConstants.TRAIT_GENES.values():
+            standard_phenotype_names.extend([def_dict["D"], def_dict["r"]])
+
+        for locus_key, alleles in genotype.items():
+            definition = GeneticConstants.TRAIT_GENES.get(locus_key)
             if not definition:
                 continue
 
-            # 1. 希少遺伝子（突然変異アレル）のチェック
+            # 1. 突然変異アレル（希少遺伝子）の検出
+            # 優先順位が高い順にチェック
+            priority_mutations = ["antinomy", "singularity", "anti_taboo"]
             rare_trait = None
-            generic_alleles = [
-                "early",
-                "late",
-                "hardy",
-                "frail",
-                "stable",
-                "burst",
-                "aesthetic",
-            ]
 
-            # 特異的な優先順位を持つ特性をチェック
-            priority_traits = ["antinomy", "singularity", "anti_taboo"]
-            for pt in priority_traits:
-                if pt in alleles:
-                    rare_trait = pt
+            # まず優先度の高い変異があるかチェック
+            for pm in priority_mutations:
+                if pm in alleles:
+                    rare_trait = pm
                     break
 
+            # 次にそれ以外の突然変異をチェック
             if not rare_trait:
-                for allele in alleles:
+                for a in alleles:
+                    # アレル名が TraitRegistry に存在し、かつ標準的なアレル(D, r)や
+                    # 標準的な表現型名、禁忌形質（これらは後続処理で付与）でない場合
                     if (
-                        allele in GeneticConstants.TRAIT_EFFECTS
-                        and allele not in generic_alleles
-                        and "forbidden" not in allele
+                        a in all_mutation_keys
+                        and a not in ["D", "r"]
+                        and a not in standard_phenotype_names
+                        and "forbidden" not in a
                     ):
-                        rare_trait = allele
+                        rare_trait = a
                         break
 
+            # 変異が見つかればそれを発現特性とする
             if rare_trait:
                 active_traits.append(rare_trait)
             else:
-                # 2. 通常の優劣遺伝判定 (DがあればDの表現型、なければr)
+                # 2. 通常の優劣遺伝判定 (Dがあれば優性表現型、なければ劣性表現型)
                 if "D" in alleles:
                     active_traits.append(definition["D"])
                 else:
@@ -81,7 +89,6 @@ class MendelEngine:
 
         # 3. 血統に刻まれた「禁忌」因子の解決
         # 性別による発現制限 (Red=Male, Blue=Female)
-        # 背反・禁断個体における「昇華」した発現は TabooLogic.resolve_taboo_transformation で後続処理される
         if gender == "M" and genetics_meta.get("has_forbidden_red"):
             active_traits.append("forbidden_red")
         if gender == "F" and genetics_meta.get("has_forbidden_blue"):

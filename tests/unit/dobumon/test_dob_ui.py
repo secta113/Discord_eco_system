@@ -62,3 +62,27 @@ def test_hp_bar_privacy():
     # 非所有者: 数値なし
     bar_guest = DobumonFormatter.get_hp_bar(50, 100, is_owner=False)
     assert "??? / ???" in bar_guest
+
+
+def test_bond_text_formatting():
+    """なつき度（絆）のUIメッセージフォーマットのテスト"""
+    test_cases = [
+        (-10, "🥀"),
+        (0, "🍂"),
+        (4, "🍂"),
+        (5, "🌱"),
+        (14, "🌱"),
+        (15, "💖"),
+        (29, "💖"),
+        (30, "✨"),
+        (49, "✨"),
+        (50, "🤝"),
+        (69, "🤝"),
+        (70, "🔥"),
+        (99, "🔥"),
+        (100, "💎"),
+        (150, "💎"),
+    ]
+    for val, expected_icon in test_cases:
+        actual = DobumonFormatter.get_bond_text(val)
+        assert expected_icon in actual

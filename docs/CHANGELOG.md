@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v2.6] - 2026-05-06
+### Improved
+- **特性ロジックのクラスベース化 (`traits/`)**: 特性（Traits）ごとに独立したクラスを定義。寿命・病気率・戦闘ボーナスなどの計算を各特性クラスにカプセル化し、`TraitRegistry` による統合管理を実現。
+- **遺伝子座マッピングの正確な反映**: ドキュメント仕様に基づき、`anti_taboo` を `potential` へ、`glass_blade` を `body` へ再配置。新規カテゴリ `growth`（無限、捕食）を正式に定義。
+- **禁忌ペナルティの整合性確保**: 赤の禁忌 (`+0.15`)・青の禁忌 (`+0.10`) の病気率ペナルティを特性クラス側で保証し、他の健康特性による減衰を防ぐ設計に変更。
+- **遺伝判定アルゴリズムの堅牢化**: `MendelEngine.resolve_traits` においてアレルと表現型名の混同を防止するフィルタリングを強化。
+
+### Fixed
+- **究極の禁忌（禁断）の不妊優先**: `antinomy`（背反）による不妊解除よりも、`the_forbidden`（禁断）による不妊設定を優先するように修正。
+- **遺伝時アレル消失バグ**: `MendelEngine.crossover` において、突然変異アレルを継承しない場合に汎用アレルが消失する問題を修正。
+
 ## [v2.5] - 2026-05-05
 ### Improved
 - **UI ファイルの一元化 (`logic/dobumon/ui/`)**: 3箇所に分散していた Dobumon の View 群（`dob_views/`・`dob_shop/dob_shop_view.py`・`dob_battle/wild/wild_views.py`）を `logic/dobumon/ui/` に統合。`dob_views/` ディレクトリを廃止。
