@@ -1,8 +1,12 @@
 import random
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 
 from logic.dobumon.core.dob_exceptions import DobumonError, DobumonGeneticsError
 from logic.dobumon.genetics.dob_genetics_constants import GeneticConstants
+from logic.dobumon.genetics.traits.registry import TraitRegistry
+
+if TYPE_CHECKING:
+    from logic.dobumon.core.dob_models import Dobumon
 
 
 class MutationEngine:
@@ -85,3 +89,13 @@ class MutationEngine:
             if trait in active_traits and locus in genotype:
                 # 100% 遺伝を保証するため、その形質自体をアレルとして両方の座にセットします。
                 genotype[locus] = [trait, trait]
+
+    @classmethod
+    def apply_phenotype_modifiers(cls, dobumon: 'Dobumon'):
+        """
+        個体が持つ特性（traits）に基づいて、実数ステータス、寿命、特殊フラグを適用します。
+        """
+        # 特性クラスを順次適用
+        for trait_key in dobumon.traits:
+            trait_obj = TraitRegistry.get(trait_key)
+            trait_obj.apply_initial_status(dobumon)

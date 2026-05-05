@@ -2,7 +2,7 @@ import random
 from typing import Dict
 
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.core.dob_traits import TraitRegistry
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 
 from .dob_train_config import SCALE_FACTORS
 
@@ -37,7 +37,7 @@ class WildGrowthEngine:
 
             # 特性による補正
             for t in dobu.traits:
-                growth_deg = TraitRegistry.get(t).on_growth_multiplier(growth_deg)
+                growth_deg = TraitRegistry.get(t).on_growth_multiplier(dobu, growth_deg)
 
             # 乱数 (80% ~ 120%)
             variance = random.uniform(0.8, 1.2)

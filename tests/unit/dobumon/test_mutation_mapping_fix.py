@@ -4,6 +4,7 @@ import pytest
 
 from logic.dobumon.core.dob_factory import DobumonFactory
 from logic.dobumon.genetics.dob_genetics_constants import GeneticConstants
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 
 
 def test_forced_mutation_correct_locus():
@@ -18,9 +19,10 @@ def test_forced_mutation_correct_locus():
         genotype = dobu.genetics["genotype"]
         found_mutation = False
 
+        all_trait_keys = TraitRegistry.get_all_keys()
         for locus, alleles in genotype.items():
             for allele in alleles:
-                if allele in GeneticConstants.TRAIT_EFFECTS and allele not in [
+                if allele in all_trait_keys and allele not in [
                     "early",
                     "late",
                     "hardy",
@@ -77,7 +79,8 @@ def test_migration_logic_simulation():
     all_alleles = []
     for locus_alleles in old_genotype.values():
         for allele in locus_alleles:
-            if allele in GeneticConstants.TRAIT_EFFECTS and allele not in [
+            all_trait_keys = TraitRegistry.get_all_keys()
+            if allele in all_trait_keys and allele not in [
                 "early",
                 "late",
                 "hardy",

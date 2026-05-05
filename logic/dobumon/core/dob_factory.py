@@ -94,6 +94,10 @@ class DobumonFactory:
         dobu.max_lifespan = dobu.lifespan  # 確定した寿命をコピー
 
         DobumonLogger.genetics(dobu, context="Factory")
+
+        # 特性による実数ステータス・寿命の補正を適用
+        MutationEngine.apply_phenotype_modifiers(dobu)
+
         return dobu
 
     @staticmethod
@@ -139,6 +143,7 @@ class DobumonFactory:
             lineage=[],
         )
         dobu.health = dobu.hp
+        MutationEngine.apply_phenotype_modifiers(dobu)
         return dobu
 
     @staticmethod

@@ -124,18 +124,17 @@ class Dobumon:
         寿命消費および疲労蓄積の倍率。
         遺伝、特性、懐き度によって変動します。
         """
+        from logic.dobumon.genetics.traits.registry import TraitRegistry
+        
         mod = self.genetics.get("consumption_mod", 1.0)
 
         # 1. 禁忌深度による加速 (TabooLogic に委譲)
         mod = TabooLogic.apply_status_modifiers(self, mod)
 
-        # 2. 特性による補正
-        if "forbidden_blue" in self.traits:
-            mod *= 2.0
-        if "hardy" in self.traits:
-            mod *= 0.7
-        if "frail" in self.traits:
-            mod *= 1.5
+        # 2. 特性による補正 (特性クラスに委譲)
+        for t in self.traits:
+            trait_obj = TraitRegistry.get(t)
+            mod *= trait_obj.get_consumption_multiplier()
 
         # 3. 懐き度による老化速度の緩和
         if self.affection >= 100:

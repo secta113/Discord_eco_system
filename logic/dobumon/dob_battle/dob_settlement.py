@@ -2,7 +2,7 @@ from typing import Dict, Optional
 
 from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.core.dob_traits import TraitRegistry
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 from logic.dobumon.training import WildGrowthEngine
 
 
@@ -26,7 +26,6 @@ class BattleSettlementManager:
             loser.win_count * BattleSettlementManager.CHALLENGE_WIN_COUNT_BONUS
         )
 
-        from logic.dobumon.core.dob_traits import TraitRegistry
 
         for t in winner.traits:
             _, reward = TraitRegistry.get(t).on_combat_reward(0.0, reward)

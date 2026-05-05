@@ -4,7 +4,6 @@ import pytest
 
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.core.dob_traits import BaseTrait, TraitRegistry
-from logic.dobumon.genetics.dob_genetics_constants import TRAIT_EFFECTS
 from logic.dobumon.genetics.dob_taboo import TabooLogic
 from logic.dobumon.training import TrainingEngine
 
@@ -84,7 +83,7 @@ def test_conceptual_mutations_complex(sample_dobu):
     # Unlimited: ignores decay
     unlimited = TraitRegistry.get("unlimited")
     decayed_val = 0.2  # 1000ステータス時の減衰
-    assert unlimited.on_growth_multiplier(decayed_val) == 1.0
+    assert unlimited.on_growth_multiplier(sample_dobu, decayed_val) == 1.0
 
     # Undead: prevents death
     undead = TraitRegistry.get("undead")
@@ -93,7 +92,7 @@ def test_conceptual_mutations_complex(sample_dobu):
 
     # Parasitic: 0.1x training, 3x reward
     parasitic = TraitRegistry.get("parasitic")
-    assert parasitic.on_growth_multiplier(1.0) == 0.1
+    assert parasitic.on_growth_multiplier(sample_dobu, 1.0) == 0.1
     exp, pts = parasitic.on_combat_reward(100, 1000)
     assert exp == 300
     assert pts == 3000

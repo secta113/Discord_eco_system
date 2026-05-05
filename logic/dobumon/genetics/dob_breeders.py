@@ -4,12 +4,12 @@ from abc import ABC, abstractmethod
 from typing import Dict, List
 
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.core.dob_traits import TraitRegistry
 from logic.dobumon.dob_shop.dob_shop_effect_manager import DobumonShopEffectManager
 from logic.dobumon.genetics.dob_kinship import KinshipLogic
 from logic.dobumon.genetics.dob_mendel import MendelEngine
 from logic.dobumon.genetics.dob_mutation import MutationEngine
 from logic.dobumon.genetics.dob_taboo import TabooLogic
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 
 
 class IBreeder(ABC):
@@ -83,15 +83,11 @@ class BaseBreeder(IBreeder):
     def _inherit_stat(
         self, p1_val: float, p2_val: float, iv: float, traits: List[str], stat_key: str
     ) -> float:
-        """親のステータス実数値の平均に、IVと努力値(ランダム)、特性補正を掛けて実数値を算出します。"""
+        """親のステータス実数値の平均に、IVと努力値(ランダム)を掛けて実数値を算出します。"""
+        # 特性補正は MutationEngine.apply_phenotype_modifiers で一括適用するため、ここでは計算しません。
         base_val = (p1_val + p2_val) / 2.0
         inherited_effort = random.uniform(0, 5)
         final_val = (base_val * iv) + inherited_effort
-
-        for t in traits:
-            trait_obj = TraitRegistry.get(t)
-            mod = getattr(trait_obj, f"{stat_key}_mod", 1.0)
-            final_val *= mod
 
         return max(1, int(final_val))
 
@@ -149,6 +145,8 @@ class BaseBreeder(IBreeder):
         self, traits: List[str], inbreeding_f: float, is_bara: bool, forbidden_depth: int = 0
     ) -> tuple[float, float, bool, bool]:
         """寿命、病気率、延命可否、不妊状態を決定"""
+        # 特性による補正は MutationEngine.apply_phenotype_modifiers で一括適用するため、
+        # ここでは近親交配ペナルティ等のベース値のみを計算します。
         base_lifespan = float(random.randint(80, 120))
         # 1. 近親交配ペナルティ
         penalties = KinshipLogic.calculate_inbreeding_penalties(inbreeding_f)
@@ -159,58 +157,29 @@ class BaseBreeder(IBreeder):
         can_extend = True
         is_sterile = False
 
-        # 2. 特性による寿命・病気率補正 (禁忌深度に応じた指数減衰を含む)
+        # 薔薇配合 (M+M) はデフォルトで不妊・延命不可
+        if is_bara:
+            is_sterile = True
+            can_extend = False
+
         for t in traits:
             trait_obj = TraitRegistry.get(t)
-            l_mod = getattr(trait_obj, "lifespan_mod", 1.0)
+            # 特性クラス側の明示的な設定を反映
+            if trait_obj.is_sterile():
+                is_sterile = True
+            if not trait_obj.can_extend_lifespan():
+                can_extend = False
 
-            # 禁忌特性の場合、深度の数だけ重ね掛けする (指数関数的減少)
-            # ただし「背反」または「禁断」がある場合はこの指数減衰（加速）を抑制するロジックは
-            # Dobumon.consumption_mod で行われているが、ここでの初期寿命計算にも影響させるか。
-            # 仕様上「寿命減少速度加速を無効」なので、初期寿命そのものの減衰は「背反」で防げると解釈。
-            if t in ["forbidden_red", "forbidden_blue"] and forbidden_depth > 0:
-                if "antinomy" not in traits and "the_forbidden" not in traits:
-                    base_lifespan *= l_mod**forbidden_depth
-                else:
-                    # 加速無効化: 深度によらず1回分の補正のみにするか、あるいは完全に無効化(1.0)にするか。
-                    # ここでは「加速」を無効化するので、ベースの減衰(l_mod)自体は残し、depth乗を止める。
-                    base_lifespan *= l_mod
-            else:
-                base_lifespan *= l_mod
-
-            base_illness *= getattr(trait_obj, "illness_mod", 1.0)
-
-        # 3. 禁忌状態の個別フラグ処理
-        if "forbidden_red" in traits:
-            can_extend = False
-            is_sterile = True
-            base_illness += 0.15 if is_bara else 0.05
-
-        if "forbidden_blue" in traits:
-            can_extend = False
-            base_illness += 0.03
-
-        if "singularity" in traits:
-            # 特異点：繁殖は可能だが、延命は不可
-            is_sterile = False
-            can_extend = False
-
-        # --- 新特性による上書き ---
-        if "antinomy" in traits:
-            # 背反: 不妊を無効、延命を許可、寿命加速無効（上記計算で対応済み）
+        # 特殊特性による「呪い」の解除 (優先順位を考慮)
+        # 背反 (antinomy) は不妊・延命不可を上書きして解除する
+        # ただし、究極の禁忌である「禁断 (the_forbidden)」が発現している場合は解除できない
+        if "antinomy" in traits and "the_forbidden" not in traits:
             is_sterile = False
             can_extend = True
 
-        if "the_forbidden" in traits:
-            # 禁断: 不妊、延命不可、寿命加速無効（上記計算で対応済み）
-            # 禁断個体のバイタル（寿命）は 発生した寿命 × 禁忌深度 となる
-            is_sterile = True
-            can_extend = False
-            base_lifespan = base_lifespan * max(1, forbidden_depth)
-
         illness_rate = max(0.0, base_illness)
         lifespan = max(1.0, float(int(base_lifespan)))
-        return base_lifespan, base_illness, can_extend, is_sterile
+        return lifespan, illness_rate, can_extend, is_sterile
 
     def _resolve_genotypes(self, p1: Dobumon, p2: Dobumon) -> Dict[str, List[str]]:
         """家系図からアレルペアを抽出し、Crossoverと真の突然変異を処理します。"""
@@ -382,6 +351,10 @@ class BaseBreeder(IBreeder):
             illness_rate=illness_rate,
             can_extend_lifespan=can_extend,
         )
+        
+        # 特性による補正を一括適用
+        MutationEngine.apply_phenotype_modifiers(child)
+        
         return child
 
 

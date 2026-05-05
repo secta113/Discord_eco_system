@@ -10,7 +10,7 @@ from logic.dobumon.core.dob_exceptions import DobumonError
 from logic.dobumon.core.dob_factory import DobumonFactory
 from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.core.dob_traits import TraitRegistry
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 from logic.dobumon.dob_battle.battle_handler import BattleHandler
 from logic.dobumon.dob_battle.wild.wild_handler import WildHandler
 from logic.dobumon.genetics.breeding_handler import BreedingHandler
@@ -57,8 +57,6 @@ class DobumonManager:
         # 特性のチェック
         is_combat_death = any(k in reason for k in ["PvP", "Wild", "Battle"])
         if is_combat_death:
-            from logic.dobumon.core.dob_traits import TraitRegistry
-
             if any(TraitRegistry.get(t).modifies_battle_death() for t in dobu.traits):
                 DobumonLogger.death(dobu, reason, is_prevented=True)
                 dobu.health = max(1.0, dobu.health)
