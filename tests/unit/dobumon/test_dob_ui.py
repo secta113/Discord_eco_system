@@ -1,7 +1,7 @@
 import pytest
 
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.dob_views import DobumonFormatter
 
 
 def test_vague_gains():

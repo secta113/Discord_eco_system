@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING, List
 
 import discord
 
+from logic.dobumon.core.dob_formatter import DobumonFormatter
+
 from .dob_common import DobumonBaseView
-from .dob_formatter import DobumonFormatter
 
 if TYPE_CHECKING:
     from logic.dobumon.core.dob_models import Dobumon

@@ -6,6 +6,7 @@ from core.economy import wallet
 from core.ui.view_base import BaseView, JoinView
 from core.utils.decorators import check_maintenance, defer_response
 from core.utils.exceptions import EconomyError
+from core.utils.formatters import f_bold_pts, f_pts
 from logic.bet_service import BetService
 from logic.blackjack.bj_exceptions import BlackjackError
 from logic.blackjack.bj_formatter import BlackjackFormatter
@@ -13,7 +14,7 @@ from logic.chinchiro.cc_exceptions import ChinchiroError
 from logic.chinchiro.cc_formatter import ChinchiroFormatter
 from logic.economy.eco_formatter import EconomyFormatter
 from logic.gacha_service import gacha_service
-from logic.match_view import MatchJoinView
+from logic.match.ui.match_view import MatchJoinView
 from logic.poker.pk_exceptions import PokerError
 from logic.poker.pk_formatter import PokerFormatter
 from managers.manager import game_manager
@@ -40,7 +41,7 @@ class Games(commands.Cog):
             return await interaction.followup.send(msg, ephemeral=True)
         embed = discord.Embed(title="🃏 ブラックジャック 参加者募集", color=0x9B59B6)
         embed.add_field(name="ホスト", value=interaction.user.mention)
-        embed.add_field(name="参加コスト", value=f"{bet} pts")
+        embed.add_field(name="参加コスト", value=f_pts(bet))
         embed.description = "Botディーラーと勝負！\n下の「参加する」ボタンで参加し、準備ができたらホストが開始ボタンを押してください。"
         view = JoinView(interaction.channel_id, game_manager)
         await interaction.followup.send(embed=embed, view=view)
@@ -55,7 +56,7 @@ class Games(commands.Cog):
             return await interaction.followup.send(msg, ephemeral=True)
         embed = discord.Embed(title="🎲 チンチロリン 参加者募集 🎲", color=0x3498DB)
         embed.add_field(name="ホスト", value=interaction.user.mention)
-        embed.add_field(name="参加コスト", value=f"{bet} pts")
+        embed.add_field(name="参加コスト", value=f_pts(bet))
         embed.set_footer(
             text="下の参加ボタンで参加し、全員揃ったらホストが開始ボタンを押してください。"
         )
@@ -72,7 +73,7 @@ class Games(commands.Cog):
             return await interaction.followup.send(msg, ephemeral=True)
         embed = discord.Embed(title="⚔️ 外部マッチ 募集", color=0xE74C3C)
         embed.add_field(name="ホスト", value=interaction.user.mention)
-        embed.add_field(name="参加コスト", value=f"{bet} pts")
+        embed.add_field(name="参加コスト", value=f_pts(bet))
         embed.description = (
             "下の「参加する」で参加。終了後、ホストは「🏁 結果報告」ボタンを押してください。"
         )
@@ -99,9 +100,9 @@ class Games(commands.Cog):
         actual_buyin = buyin if buyin is not None else bet * 20
         embed = discord.Embed(title="♣️ テキサス・ホールデム 参加者募集", color=0x1F8B4C)
         embed.add_field(name="ホスト", value=interaction.user.mention)
-        embed.add_field(name="SB", value=f"{max(1, bet // 2)} pts")
-        embed.add_field(name="BB", value=f"{bet} pts")
-        embed.add_field(name="上限スタック (参加費)", value=f"{actual_buyin} pts")
+        embed.add_field(name="SB", value=f_pts(max(1, bet // 2)))
+        embed.add_field(name="BB", value=f_pts(bet))
+        embed.add_field(name="上限スタック (参加費)", value=f_pts(actual_buyin))
         embed.description = (
             "本格的なテキサス・ホールデム対人戦！\n「参加する」でエントリーし、ホストが開始ボタンを押してください。\n"
             "※ポットから **5%の手数料(Rake)** が徴収されます。\n"
@@ -217,10 +218,10 @@ class Games(commands.Cog):
             color=rarity_colors.get(event["rarity"], 0x95A5A6),
         )
 
-        embed.add_field(name="💰 獲得ポイント", value=f"**{payout} pts**", inline=True)
-        embed.add_field(name="💸 使用コスト", value=f"{cost} pts", inline=True)
+        embed.add_field(name="💰 獲得ポイント", value=f_bold_pts(payout), inline=True)
+        embed.add_field(name="💸 使用コスト", value=f_pts(cost), inline=True)
         embed.add_field(
-            name="💳 残高", value=f"{wallet.load_balance(interaction.user.id)} pts", inline=True
+            name="💳 残高", value=f_pts(wallet.load_balance(interaction.user.id)), inline=True
         )
 
         collected, total, percentage = gacha_service.get_completion_info(interaction.user.id)

@@ -126,7 +126,7 @@ class JoinView(BaseView):
 
     @ui.button(label="▶️ 開始する", style=discord.ButtonStyle.primary)
     async def start_button(self, interaction: discord.Interaction, button: ui.Button):
-        from . import starter
+        from managers import starter
 
         await interaction.response.defer()
 

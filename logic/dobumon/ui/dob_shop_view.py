@@ -5,6 +5,7 @@ from discord import ui
 
 from core.economy import wallet
 from core.ui.view_base import BaseView
+from core.utils.formatters import f_pts
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.dob_shop.dob_items import SHOPS, Shop, ShopItem, get_item_by_id, get_shop_by_id
 from logic.dobumon.dob_shop.dob_shop_service import DobumonShopService
@@ -94,7 +95,7 @@ class DobumonShopView(BaseView):
         # アイテム選択
         item_options = [
             discord.SelectOption(
-                label=f"{item.name} ({item.price:,} pts)",
+                label=f"{item.name} ({f_pts(item.price)})",
                 value=item.item_id,
                 description=item.description[:50],
                 default=(self.selected_item and item.item_id == self.selected_item.item_id),
@@ -156,7 +157,7 @@ class DobumonShopView(BaseView):
             self.buy_button.disabled = not (self.selected_item and self.selected_dobumon_id)
             if self.selected_item:
                 self.buy_button.label = (
-                    f"購入: {self.selected_item.name} ({self.selected_item.price:,} pts)"
+                    f"購入: {self.selected_item.name} ({f_pts(self.selected_item.price)})"
                 )
 
     def create_embed(self) -> discord.Embed:
@@ -170,7 +171,7 @@ class DobumonShopView(BaseView):
         elif self.step == 3:
             embed.title = f"🛒 {self.selected_shop.name} - 商品棚"
             if self.selected_item:
-                embed.description = f"**商品: {self.selected_item.name}**\n価格: **{self.selected_item.price:,} pts**\n効果: {self.selected_item.description}"
+                embed.description = f"**商品: {self.selected_item.name}**\n価格: **{f_pts(self.selected_item.price)}**\n効果: {self.selected_item.description}"
             else:
                 embed.description = "購入するアイテムを選んでください。"
 
@@ -207,7 +208,7 @@ class DobumonShopView(BaseView):
                 color=discord.Color.red(),
             )
             rejection_embed.add_field(name="現在のランク", value=self.user_status, inline=True)
-            rejection_embed.add_field(name="不足ポイント", value=f"{missing:,} pts", inline=True)
+            rejection_embed.add_field(name="不足ポイント", value=f_pts(missing), inline=True)
             rejection_embed.set_footer(
                 text="※Primeユーザーになるには所持金がベンチマークを超える必要があります。"
             )

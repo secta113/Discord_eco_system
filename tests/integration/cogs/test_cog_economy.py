@@ -23,7 +23,7 @@ async def test_cmd_balance(init_test_env, mock_interaction):
     # レスポンスの検証 (defer_response により followup.send が呼ばれる)
     mock_interaction.followup.send.assert_called_once()
     args, kwargs = mock_interaction.followup.send.call_args
-    assert "5,000 pts" in args[0]
+    assert "**5,000** pts" in args[0]
 
 
 @pytest.mark.asyncio
@@ -40,7 +40,7 @@ async def test_cmd_jackpot(init_test_env, mock_interaction):
     mock_interaction.followup.send.assert_called_once()
     args, kwargs = mock_interaction.followup.send.call_args
     embed = kwargs.get("embed") or args[0]
-    assert "777777 pts" in embed.description
+    assert "**777,777** pts" in embed.description
 
 
 @pytest.mark.asyncio

@@ -2,10 +2,11 @@ from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
 import discord
 
+from core.utils.formatters import f_commas, f_pts
 from core.utils.time_utils import get_jst_today
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 
 from .dob_common import DobumonBaseView, DobumonSelect, MenuSelect
-from .dob_formatter import DobumonFormatter
 
 if TYPE_CHECKING:
     from logic.dobumon.core.dob_models import Dobumon
@@ -52,7 +53,7 @@ class TrainingView(DobumonBaseView):
 
         if dobu and self.cost_calc_func:
             cost = self.cost_calc_func(dobu)
-            description += f"\n\n💰 **必要費用**: `{cost:,}` pts"
+            description += f"\n\n💰 **必要費用**: {f_pts(cost)}"
             if dobu.affection >= 100:
                 description += " (絆による割引適用中)"
 
@@ -95,7 +96,7 @@ class TrainingView(DobumonBaseView):
         # 費用の計算と表示
         if dobu and self.cost_calc_func:
             cost = self.cost_calc_func(dobu)
-            description += f"\n\n💰 **必要費用**: `{cost:,}` pts"
+            description += f"\n\n💰 **必要費用**: {f_pts(cost, bold=True)}"
             if dobu.affection >= 100:
                 description += " (絆による割引適用中)"
 

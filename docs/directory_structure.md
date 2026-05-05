@@ -1,7 +1,7 @@
 # ディレクトリ構造 (directory_structure.md)
 
-> **最終更新**: 2026-05-04  
-> *v2.3 遺伝システム刷新（MutationEngine導入、遺伝子座固定、マッピング修正）の反映*
+> **最終更新**: 2026-05-05  
+> *v2.5 UIリファクタリング：ドブモンUIの一元化、ゲームUIのサブディレクトリ化、matchパッケージ化、starter.py移動*
 
 ---
 
@@ -30,8 +30,7 @@
 │   ├── models/          — データモデル・バリデーション
 │   │   └── validation.py — Pydantic によるデータ構造定義・検証
 │   ├── ui/              — Discord UI 共通コンポーネント
-│   │   ├── view_base.py — DobumonBaseView: 認可チェック付き基底Viewクラス
-│   │   └── starter.py   — execute_game_start(): ゲーム種別判定・開始UI制御
+│   │   └── view_base.py — BaseView/BaseModal/JoinView: 全Viewの基底クラス・エラーハンドラー
 │   ├── utils/           — ユーティリティ
 │   │   ├── config.py    — VERSION等の定数定義
 │   │   ├── constants.py — 共通定数定義
@@ -40,7 +39,8 @@
 │   │   ├── decorators.py — @check_maintenance / @defer_response 等
 │   │   ├── card_assets.py — カード画像アセット管理
 │   │   ├── font_manager.py — フォント管理 (Canvas描画用)
-│   │   └── time_utils.py — 日時ユーティリティ
+│   │   ├── time_utils.py — 日時ユーティリティ
+│   │   └── formatters.py — 数字フォーマット (カンマ区切り、pts付与)
 │   └── economy.py       — WalletManager: 残高・統計操作の窓口
 ├── cogs/                — Discord 拡張機能 (Extension)
 │   ├── economy.py       — 経済関連コマンド (balance, top, daily)
@@ -51,11 +51,17 @@
 ├── logic/               — ビジネスロジック・ゲームエンジン
 │   ├── bet_service.py   — 経済ルールのファサード
 │   ├── gacha_service.py — ガチャ抽選ロジック
-│   ├── match_service.py — 1vs1外部ゲーム用エスクローマッチ管理
-│   ├── match_view.py    — マッチ用Discord UI
+│   ├── match/           — 外部マッチ（エスクロー）パッケージ
+│   │   ├── __init__.py
+│   │   ├── match_service.py — 1vs1外部ゲーム用エスクローマッチ管理
+│   │   └── ui/
+│   │       ├── __init__.py
+│   │       └── match_view.py — マッチ用Discord UI
 │   ├── blackjack/       — ブラックジャック ゲームエンジン
+│   │   ├── ui/                  — Discord UI サブパッケージ
+│   │   │   ├── __init__.py
+│   │   │   └── bj_view.py       — UI
 │   │   ├── bj_service.py        — 進行管理
-│   │   ├── bj_view.py           — UI
 │   │   ├── bj_deck.py           — デッキ（data/card/ のカード画像を使用）
 │   │   ├── bj_canvas.py         — 手札画像合成 Canvas
 │   │   ├── bj_models.py         — データモデル
@@ -64,16 +70,20 @@
 │   │   ├── bj_exceptions.py     — 例外クラス
 │   │   └── bj_hospitality.py    — 接待
 │   ├── chinchiro/       — チンチロリン ゲームエンジン
+│   │   ├── ui/                  — Discord UI サブパッケージ
+│   │   │   ├── __init__.py
+│   │   │   └── cc_view.py       — UI
 │   │   ├── cc_service.py        — 進行管理
-│   │   ├── cc_view.py           — UI
 │   │   ├── cc_models.py         — モデル
 │   │   ├── cc_rules.py          — ルール
 │   │   └── cc_hospitality.py    — 接待
 │   ├── poker/           — テキサス・ホールデム ゲームエンジン
+│   │   ├── ui/                  — Discord UI サブパッケージ
+│   │   │   ├── __init__.py
+│   │   │   └── pk_view.py       — UI
 │   │   ├── pk_service.py        — コーディネーター
 │   │   ├── pk_round_manager.py  — ベッティング管理
 │   │   ├── pk_settlement_manager.py — 精算管理
-│   │   ├── pk_view.py           — UI
 │   │   ├── pk_deck.py           — デッキ（data/card/ のカード画像を使用）
 │   │   ├── pk_canvas.py         — テーブル画像合成 Canvas
 │   │   ├── pk_models.py         — モデル
@@ -97,6 +107,7 @@
 │   │   │   ├── dob_constants.py     — 共通定数
 │   │   │   ├── dob_exceptions.py    — ドブモン固有例外
 │   │   │   ├── dob_factory.py       — 個体生成ファクトリ（初期値・野生個体）
+│   │   │   ├── dob_formatter.py     — ANSI装飾Embed生成 ※v2.5移動
 │   │   │   ├── dob_manager.py       — DB操作・個体の読み書き基盤
 │   │   │   ├── dob_market_service.py— マーケット（売買）サービス
 │   │   │   ├── dob_buy_service.py   — 購入処理専用サービス
@@ -104,6 +115,20 @@
 │   │   │   ├── dob_logger.py        — ログ出力（アクション・スペック）の一元管理
 │   │   │   ├── dob_training_service.py — トレーニングサービスファサード
 │   │   │   └── dob_traits.py        — 特性（トレイト）定義・効果計算
+│   │   ├── ui/                  — Discord UI パッケージ ※v2.5統合
+│   │   │   ├── __init__.py
+│   │   │   ├── dob_battle.py        — 対人戦闘UI
+│   │   │   ├── dob_breeding.py      — 交配UI
+│   │   │   ├── dob_buy.py           — 購入確認UI
+│   │   │   ├── dob_common.py        — 共通コンポーネント (BaseView等)
+│   │   │   ├── dob_kinship_tree.py  — 家系図Canvas生成
+│   │   │   ├── dob_map_view.py      — 家系図表示対象の選択UI
+│   │   │   ├── dob_sell.py          — 売却UI
+│   │   │   ├── dob_shop_view.py     — ショップDiscord UI ※v2.5移動
+│   │   │   ├── dob_skill.py         — 技命名UI
+│   │   │   ├── dob_status.py        — ステータス表示View
+│   │   │   ├── dob_training.py      — トレーニングUI
+│   │   │   └── dob_wild_views.py    — 野生戦闘UIウィザード ※v2.5移動
 │   │   ├── dob_battle/          — 戦闘計算パッケージ
 │   │   │   ├── __init__.py
 │   │   │   ├── battle_handler.py    — 戦闘リクエストのディスパッチャ
@@ -115,27 +140,12 @@
 │   │   │       ├── __init__.py
 │   │   │       ├── wild_config.py   — 難易度ランク設定 (JSON定義)
 │   │   │       ├── wild_handler.py  — 野生戦闘フロー制御
-│   │   │       ├── wild_settlement.py — 野生戦闘報酬処理
-│   │   │       └── wild_views.py    — 野生戦闘UIウィザード (3ステップ)
+│   │   │       └── wild_settlement.py — 野生戦闘報酬処理
 │   │   ├── dob_shop/            — ショップシステムパッケージ
 │   │   │   ├── __init__.py
 │   │   │   ├── dob_items.py         — アイテム定義・効果仕様
 │   │   │   ├── dob_shop_effect_manager.py — アイテム効果の適用処理
-│   │   │   ├── dob_shop_service.py  — ショップビジネスロジック
-│   │   │   └── dob_shop_view.py     — ショップDiscord UI
-│   │   ├── dob_views/           — Discord UI パッケージ
-│   │   │   ├── __init__.py
-│   │   │   ├── dob_battle.py        — 対人戦闘UI
-│   │   │   ├── dob_breeding.py      — 交配UI
-│   │   │   ├── dob_buy.py           — 購入確認UI
-│   │   │   ├── dob_common.py        — 共通コンポーネント (defer_response等)
-│   │   │   ├── dob_formatter.py     — ANSI装飾Embed生成 (ステータス表示)
-│   │   │   ├── dob_kinship_tree.py  — 家系図Canvas生成
-│   │   │   ├── dob_map_view.py      — 家系図表示対象の選択UI
-│   │   │   ├── dob_sell.py          — 売却UI
-│   │   │   ├── dob_skill.py         — 技命名UI
-│   │   │   ├── dob_status.py        — ステータス表示View
-│   │   │   └── dob_training.py      — トレーニングUI
+│   │   │   └── dob_shop_service.py  — ショップビジネスロジック
 │   │   ├── genetics/            — 遺伝・配合計算パッケージ
 │   │   │   ├── __init__.py
 │   │   │   ├── breeding_handler.py      — 配合リクエストのハンドラ
@@ -164,7 +174,8 @@
 │       └── config.json      — 経済パラメータ設定
 ├── managers/            — セッション管理
 │   ├── manager.py       — GameManager: チャンネル別一元管理
-│   └── game_session.py  — BaseGameSession: 基底クラス
+│   ├── game_session.py  — BaseGameSession: 基底クラス
+│   └── starter.py       — execute_game_start(): ゲーム開始UI制御
 ├── data/                — 永続化データ
 │   ├── discord_eco_sys.db     — 本番DB
 │   ├── gacha_event.json       — ガチャ設定

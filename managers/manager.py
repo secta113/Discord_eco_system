@@ -8,7 +8,7 @@ from logic.blackjack import BlackjackService
 from logic.chinchiro import ChinchiroService
 from logic.dobumon.dob_battle.battle_session import DobumonBattleSession
 from logic.economy.status import StatusService
-from logic.match_service import MatchService
+from logic.match.match_service import MatchService
 from logic.poker.pk_service import TexasPokerService
 
 

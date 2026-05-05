@@ -1,2 +1,2 @@
 from .cc_service import ChinchiroService
-from .cc_view import ChinchiroView
+from .ui.cc_view import ChinchiroView

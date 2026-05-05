@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 import discord
 import pytest
 
-from logic.dobumon.dob_views.dob_breeding import BreedSelectView
+from logic.dobumon.ui.dob_breeding import BreedSelectView
 
 
 @pytest.mark.asyncio

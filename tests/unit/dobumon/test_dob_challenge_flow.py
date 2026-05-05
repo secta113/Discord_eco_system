@@ -66,7 +66,7 @@ async def test_execute_challenge_sends_view():
     interaction.followup.send.assert_called_once()
     args, kwargs = interaction.followup.send.call_args
     assert "view" in kwargs
-    from logic.dobumon.dob_views.dob_battle import DobumonSelectionView
+    from logic.dobumon.ui.dob_battle import DobumonSelectionView
 
     assert isinstance(kwargs["view"], DobumonSelectionView)
 
@@ -142,7 +142,7 @@ async def test_start_challenge_battle_creates_session():
 @pytest.mark.asyncio
 async def test_challenge_acceptance_flow_single_dobumon():
     """防衛者が1体のみ所持の場合、受諾で即座に開始されることを検証"""
-    from logic.dobumon.dob_views.dob_battle import ChallengeView
+    from logic.dobumon.ui.dob_battle import ChallengeView
 
     manager = MagicMock()
     callback = AsyncMock()
@@ -192,7 +192,7 @@ async def test_challenge_acceptance_flow_single_dobumon():
 @pytest.mark.asyncio
 async def test_challenge_acceptance_flow_multiple_dobumons():
     """防衛者が複数所持の場合、受諾で選択ビューが表示されることを検証"""
-    from logic.dobumon.dob_views.dob_battle import ChallengeView
+    from logic.dobumon.ui.dob_battle import ChallengeView
 
     manager = MagicMock()
     callback = AsyncMock()
@@ -251,6 +251,6 @@ async def test_challenge_acceptance_flow_multiple_dobumons():
     # 選択メニューが送信されたか確認
     interaction.followup.send.assert_called_once()
     args, kwargs = interaction.followup.send.call_args
-    from logic.dobumon.dob_views.dob_battle import DobumonSelectionView
+    from logic.dobumon.ui.dob_battle import DobumonSelectionView
 
     assert isinstance(kwargs["view"], DobumonSelectionView)

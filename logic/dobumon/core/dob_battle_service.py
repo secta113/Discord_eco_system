@@ -10,7 +10,7 @@ from logic.dobumon.core.dob_exceptions import (
 from logic.dobumon.core.dob_manager import DobumonManager
 from logic.dobumon.core.dob_models import Dobumon
 from logic.dobumon.dob_battle.dob_engine import BattleEngine
-from logic.dobumon.dob_views.dob_battle import (
+from logic.dobumon.ui.dob_battle import (
     BattleAutoView,
     ChallengeView,
     DobumonSelectionView,

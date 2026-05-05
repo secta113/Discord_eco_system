@@ -3,9 +3,10 @@ from discord import ui
 
 from core.economy import wallet
 from core.ui.view_base import BaseModal
+from core.utils.formatters import f_commas, f_pts
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 
 from .dob_common import DobumonBaseView
-from .dob_formatter import DobumonFormatter
 
 
 class DobumonNameModal(BaseModal):
@@ -58,7 +59,7 @@ class DobumonBuyView(DobumonBaseView):
                 discord.SelectOption(
                     label=config["name"],
                     value=sid,
-                    description=f"{config['price']:,} pts",
+                    description=f_pts(config["price"]),
                     emoji=config["emoji"],
                 )
             )
@@ -152,7 +153,7 @@ class DobumonBuyView(DobumonBaseView):
         config = self.buy_service.get_shop_config(self.shop_id)
 
         buy_button = ui.Button(
-            label=f"購入する ({config['price']:,} pts)",
+            label=f"購入する ({f_pts(config['price'])})",
             style=discord.ButtonStyle.success,
             row=0,
         )
@@ -197,7 +198,7 @@ class DobumonBuyView(DobumonBaseView):
             embed.description += DobumonFormatter.get_stat_grid(dobu, is_owner=False)
             embed.add_field(
                 name="残高",
-                value=f"{wallet.load_balance(interaction.user.id):,} pts",
+                value=f_pts(wallet.load_balance(interaction.user.id)),
                 inline=False,
             )
 
@@ -233,7 +234,7 @@ class DobumonBuyView(DobumonBaseView):
 
             for _sid, config in SHOP_CONFIGS.items():
                 embed.add_field(
-                    name=f"{config['emoji']} {config['name']} ({config['price']:,} pts)",
+                    name=f"{config['emoji']} {config['name']} ({f_pts(config['price'])})",
                     value=config["description"],
                     inline=False,
                 )
@@ -268,6 +269,6 @@ class DobumonBuyView(DobumonBaseView):
             )
 
         balance = wallet.load_balance(self.user.id)
-        embed.set_footer(text=f"現在の所持ポイント: {balance:,} pts")
+        embed.set_footer(text=f"現在の所持ポイント: {f_pts(balance)}")
 
         return embed

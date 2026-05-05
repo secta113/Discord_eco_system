@@ -1,6 +1,6 @@
 import pytest
 
-from logic.match_service import MatchService
+from logic.match.match_service import MatchService
 
 
 def test_match_service_initialization():

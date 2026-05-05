@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from core.economy import wallet
 from core.utils.decorators import check_maintenance, defer_response
+from core.utils.formatters import f_bold_pts, f_pts
 from logic.bet_service import BetService
 from logic.economy.jackpot import JackpotService
 from logic.economy.provider import EconomyProvider
@@ -23,7 +24,7 @@ class Economy(commands.Cog):
     async def balance(self, interaction: discord.Interaction):
         bal = wallet.load_balance(interaction.user.id)
         await interaction.followup.send(
-            f"🪙 {interaction.user.mention} さんの現在の残高は **{bal:,} pts** です。",
+            f"🪙 {interaction.user.mention} さんの現在の残高は {f_bold_pts(bal)} です。",
             ephemeral=True,
         )
 
@@ -35,7 +36,7 @@ class Economy(commands.Cog):
         jp_amount = JackpotService.get_pool_balance()
         embed = discord.Embed(
             title="🎰 システム・ジャックポット",
-            description=f"現在のプール額: **{jp_amount} pts**\n\n(※対システム戦でのプレイヤーの消費分等がプールされ、今後のシステム還元等に利用されます)",
+            description=f"現在のプール額: {f_bold_pts(jp_amount)}\n\n(※対システム戦でのプレイヤーの消費分等がプールされ、今後のシステム還元等に利用されます)",
             color=0xE67E22,
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -48,10 +49,10 @@ class Economy(commands.Cog):
         bal = wallet.load_balance(target.id)
 
         embed = discord.Embed(title=f"📊 {target.display_name} のプロフィール", color=0x9B59B6)
-        embed.add_field(name="所持ポイント", value=f"{bal:,} pts", inline=False)
+        embed.add_field(name="所持ポイント", value=f_pts(bal), inline=False)
         embed.add_field(name="累計参加回数", value=f"{stats['games_played']} 回", inline=True)
         embed.add_field(name="累計勝利回数", value=f"{stats['total_wins']} 回", inline=True)
-        embed.add_field(name="最大一撃配当", value=f"{stats['max_win_amount']:,} pts", inline=True)
+        embed.add_field(name="最大一撃配当", value=f_pts(stats["max_win_amount"]), inline=True)
 
         if stats["games_played"] > 0:
             win_rate = (stats["total_wins"] / stats["games_played"]) * 100
@@ -98,7 +99,7 @@ class Economy(commands.Cog):
 
         from_bal_after = wallet.load_balance(interaction.user.id)
         await interaction.followup.send(
-            f"💸 {target.mention} に {amount} pts を送りました。(あなたの残高: {from_bal_after} pts)"
+            f"💸 {target.mention} に {f_pts(amount)} を送りました。(あなたの残高: {f_pts(from_bal_after)})"
         )
 
 

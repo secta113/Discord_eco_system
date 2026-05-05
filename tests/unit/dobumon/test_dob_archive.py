@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.dob_views.dob_kinship_tree import DobumonKinshipTree
+from logic.dobumon.ui.dob_kinship_tree import DobumonKinshipTree
 
 
 def test_canvas_ancestor_auto_completion():

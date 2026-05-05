@@ -65,7 +65,7 @@ class DobumonMapSelectionView(DobumonBaseView):
 
     async def on_select(self, interaction: discord.Interaction):
         # 循環参照を避けるため動的インポート
-        from logic.dobumon.dob_views.dob_kinship_tree import DobumonKinshipTree
+        from logic.dobumon.ui.dob_kinship_tree import DobumonKinshipTree
 
         await interaction.response.defer()
 
@@ -119,7 +119,7 @@ class MapSampleBreedView(DobumonBaseView):
         self.p2_id: Optional[str] = None
 
         # 親選択ドロップダウンの追加
-        from logic.dobumon.dob_views.dob_breeding import Parent1Select, Parent2Select
+        from logic.dobumon.ui.dob_breeding import Parent1Select, Parent2Select
 
         if alive_dobumons:
             self.add_item(Parent1Select(alive_dobumons))
@@ -128,8 +128,8 @@ class MapSampleBreedView(DobumonBaseView):
     async def update_message(self, interaction: discord.Interaction):
         await interaction.response.defer()
 
-        from logic.dobumon.dob_views.dob_breeding import BreedSelectBaseView
-        from logic.dobumon.dob_views.dob_kinship_tree import DobumonKinshipTree
+        from logic.dobumon.ui.dob_breeding import BreedSelectBaseView
+        from logic.dobumon.ui.dob_kinship_tree import DobumonKinshipTree
 
         # 選択中の個体情報を取得
         p1 = next((d for d in self.all_dobumons if d.dobumon_id == self.p1_id), None)

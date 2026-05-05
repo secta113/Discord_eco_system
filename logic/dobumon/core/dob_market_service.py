@@ -1,6 +1,7 @@
 import discord
 
 from core.economy import wallet
+from core.utils.formatters import f_bold_pts, f_pts
 from logic.dobumon.core.dob_exceptions import (
     DobumonExecutionError,
     DobumonNotFoundError,
@@ -56,10 +57,10 @@ class DobumonMarketService:
 
         embed = discord.Embed(
             title="💰 売却完了",
-            description=f"**{dobu.name}** をドブ街のバイヤーに売却しました。\n\n獲得: **{price:,} pts**",
+            description=f"**{dobu.name}** をドブ街のバイヤーに売却しました。\n\n獲得: {f_bold_pts(price)}",
             color=0xF1C40F,
         )
-        embed.add_field(name="現在の残高", value=f"{wallet.load_balance(user_id):,} pts")
+        embed.add_field(name="現在の残高", value=f_pts(wallet.load_balance(user_id)))
 
         if interaction.response.is_done():
             await interaction.edit_original_response(embed=embed, view=None)

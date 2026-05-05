@@ -44,7 +44,9 @@ class DobumonLogger:
     @staticmethod
     def market(user_name: str, action: str, dobu: Dobumon, price: int = 0):
         """売却や命名などの市場・管理操作を記録します。"""
-        price_info = f" for {price} pts" if price > 0 else ""
+        from core.utils.formatters import f_pts
+
+        price_info = f" for {f_pts(price)}" if price > 0 else ""
         msg = f"[Market] User {user_name} {action} {dobu.name}({dobu.dobumon_id[:8]}){price_info}"
         Logger.info("Dobumon", msg)
 

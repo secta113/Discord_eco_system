@@ -5,11 +5,9 @@ from logic.dobumon.core.dob_exceptions import (
     DobumonExecutionError,
     DobumonInsufficientPointsError,
 )
+from logic.dobumon.core.dob_formatter import DobumonFormatter
 from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_manager import DobumonManager
-from logic.dobumon.dob_views import (
-    DobumonFormatter,
-)
 
 
 class DobumonBreedingService:

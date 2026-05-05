@@ -1,4 +1,4 @@
 import datetime
 
-VERSION = "v2.3"
+VERSION = "v2.4"
 START_TIME = datetime.datetime.now()

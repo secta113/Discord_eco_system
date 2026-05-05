@@ -40,7 +40,7 @@ async def test_dob_buy_view_logic_flow():
     from unittest.mock import AsyncMock
 
     from logic.dobumon.core.dob_exceptions import DobumonInsufficientPointsError
-    from logic.dobumon.dob_views.dob_buy import DobumonBuyView
+    from logic.dobumon.ui.dob_buy import DobumonBuyView
 
     user = MagicMock()
     user.id = 123

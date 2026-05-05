@@ -2,8 +2,10 @@ from typing import TYPE_CHECKING, Callable, List
 
 import discord
 
+from core.utils.formatters import f_commas, f_pts
+from logic.dobumon.core.dob_formatter import DobumonFormatter
+
 from .dob_common import DobumonBaseView, DobumonSelect
-from .dob_formatter import DobumonFormatter
 
 if TYPE_CHECKING:
     from logic.dobumon.core.dob_models import Dobumon
@@ -69,7 +71,7 @@ class DobumonSellView(DobumonBaseView):
         embed.title = "💰 売却の確認"
 
         description = f"本当に **{dobu.name}** を売却しますか？\nこの操作は取り消せません。\n\n"
-        description += f"💵 **売却提示価格: {price:,} pts**\n"
+        description += f"💵 **売却提示価格: {f_pts(price)}**\n"
 
         # 禁忌深度の警告（あれば）
         forbidden_depth = dobu.genetics.get("forbidden_depth", 0)
