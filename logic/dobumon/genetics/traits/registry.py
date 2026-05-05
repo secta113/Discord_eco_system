@@ -1,30 +1,25 @@
 from typing import Dict, Type
+
 from .base import BaseMutationTrait
+from .body import BlueBloodTrait, GlassBladeTrait, GoldHornTrait, OddEyeTrait, RedBackTrait
+from .growth import ParasiticTrait, UnlimitedTrait
+from .potential import AntiTabooTrait, SingularityTrait, SupernovaTrait
 from .standard import (
-    EarlyTrait, LateTrait, HardyTrait, FrailTrait, 
-    StableTrait, BurstTrait, AestheticTrait
+    AestheticTrait,
+    BurstTrait,
+    EarlyTrait,
+    FrailTrait,
+    HardyTrait,
+    LateTrait,
+    StableTrait,
 )
-from .vitality import (
-    UndeadTrait, CrystalizedTrait, ChimeraTrait
-)
-from .potential import (
-    SupernovaTrait, SingularityTrait, AntiTabooTrait
-)
-from .growth import (
-    UnlimitedTrait, ParasiticTrait
-)
-from .body import (
-    GoldHornTrait, RedBackTrait, OddEyeTrait, BlueBloodTrait, GlassBladeTrait
-)
-from .taboo import (
-    ForbiddenRedTrait, ForbiddenBlueTrait, AntinomyTrait, 
-    TheForbiddenTrait
-)
+from .taboo import AntinomyTrait, ForbiddenBlueTrait, ForbiddenRedTrait, TheForbiddenTrait
+from .vitality import ChimeraTrait, CrystalizedTrait, UndeadTrait
 
 
 class TraitRegistry:
     """全ての特性クラスを管理するレジストリ。"""
-    
+
     _classes: Dict[str, Type[BaseMutationTrait]] = {
         # Standard
         "early": EarlyTrait,
@@ -34,27 +29,22 @@ class TraitRegistry:
         "stable": StableTrait,
         "burst": BurstTrait,
         "aesthetic": AestheticTrait,
-        
         # Growth
         "unlimited": UnlimitedTrait,
         "parasitic": ParasiticTrait,
-        
         # Vitality
         "undead": UndeadTrait,
         "crystalized": CrystalizedTrait,
         "chimera": ChimeraTrait,
-        
         # Potential
         "supernova": SupernovaTrait,
         "singularity": SingularityTrait,
-        
         # Body
         "gold_horn": GoldHornTrait,
         "red_back": RedBackTrait,
         "odd_eye": OddEyeTrait,
         "blue_blood": BlueBloodTrait,
         "glass_blade": GlassBladeTrait,
-        
         # Taboo
         "forbidden_red": ForbiddenRedTrait,
         "forbidden_blue": ForbiddenBlueTrait,

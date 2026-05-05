@@ -162,3 +162,40 @@ def test_forbidden_growth_boost(sample_dobu):
     sample_dobu.genetics["forbidden_depth"] = 0
     boosted_zero = TabooLogic.get_growth_multiplier(sample_dobu, base_growth)
     assert boosted_zero == pytest.approx(1.0 / 0.7)
+
+
+def test_aesthetic_trait_stat_modifier(sample_dobu):
+    """美形（aesthetic）特性のステータス補正を検証"""
+    aesthetic = TraitRegistry.get("aesthetic")
+    # 美形特性は回避性能を 1.05倍 にする
+    assert aesthetic.get_stat_multiplier("eva") == 1.05
+    assert aesthetic.get_stat_multiplier("hp") == 1.0
+    assert aesthetic.get_stat_multiplier("atk") == 1.0
+
+
+def test_normal_trait_stat_modifier(sample_dobu):
+    """通常（normal）特性が一切の補正を行わないことを検証"""
+    # normal は実装上クラスが存在せず、デフォルト処理される
+    normal = TraitRegistry.get("normal")
+    assert type(normal).__name__ == "BaseMutationTrait"  # registry には存在しない
+
+    # ベースの特性適用ロジックでも、TraitNotFound ではなく None 扱い
+    # Dobumon クラスの get_total_stat_multiplier などで例外が出ないか模擬検証
+    # sample_dobu に normal 特性を設定
+    sample_dobu.traits = ["normal"]
+
+    # 全ステータス倍率が 1.0 であることを確認
+    for stat in ["hp", "atk", "defense", "eva", "spd", "illness", "lifespan", "growth"]:
+        multiplier = 1.0
+        for trait_key in sample_dobu.traits:
+            trait = TraitRegistry.get(trait_key)
+            if trait:
+                if stat == "illness":
+                    multiplier *= trait.illness_mod
+                elif stat == "lifespan":
+                    multiplier *= trait.lifespan_mod
+                elif stat == "growth":
+                    multiplier *= trait.growth_mod
+                else:
+                    multiplier *= trait.get_stat_multiplier(stat)
+        assert multiplier == 1.0

@@ -1,4 +1,5 @@
 from typing import Any
+
 from .base import BaseMutationTrait
 
 
@@ -11,7 +12,9 @@ class SupernovaTrait(BaseMutationTrait):
 
 class SingularityTrait(BaseMutationTrait):
     key = "singularity"
-    desc = "特異点: 絶対不変の完成形。両親の優れた能力を無欠で引き継ぎ、その形を永劫に保つ究極の個体。"
+    desc = (
+        "特異点: 絶対不変の完成形。両親の優れた能力を無欠で引き継ぎ、その形を永劫に保つ究極の個体。"
+    )
     variation_range = (1.0, 1.0)
 
     def can_extend_lifespan(self) -> bool:
@@ -26,7 +29,7 @@ class AntiTabooTrait(BaseMutationTrait):
         mods = {}
         if "the_forbidden" in opponent.traits:
             # 禁断相手には全ステータス10倍
-            return {k: 10.0 for k in ["atk", "defense", "hp", "eva", "spd"]}
+            return dict.fromkeys(["atk", "defense", "hp", "eva", "spd"], 10.0)
 
         target_depth = opponent.genetics.get("forbidden_depth", 0)
         if target_depth > 0:

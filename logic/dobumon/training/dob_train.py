@@ -3,8 +3,8 @@ from typing import Dict
 
 from core.utils.time_utils import get_jst_today
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.genetics.traits.registry import TraitRegistry
 from logic.dobumon.dob_shop.dob_shop_effect_manager import DobumonShopEffectManager
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 
 from .dob_train_config import (
     LIFESPAN_REDUCTION_RATE_TRAINING,
@@ -86,7 +86,9 @@ class TrainingEngine:
             current_val = getattr(dobu, stat, 0.0)
             growth_multiplier = TrainingEngine._get_growth_multiplier(current_val)
             for t in dobu.traits:
-                growth_multiplier = TraitRegistry.get(t).on_growth_multiplier(dobu, growth_multiplier)
+                growth_multiplier = TraitRegistry.get(t).on_growth_multiplier(
+                    dobu, growth_multiplier
+                )
 
             # 3. 乱数 (80% ~ 120%)
             variance = random.uniform(0.8, 1.2)

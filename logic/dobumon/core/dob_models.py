@@ -125,7 +125,7 @@ class Dobumon:
         遺伝、特性、懐き度によって変動します。
         """
         from logic.dobumon.genetics.traits.registry import TraitRegistry
-        
+
         mod = self.genetics.get("consumption_mod", 1.0)
 
         # 1. 禁忌深度による加速 (TabooLogic に委譲)

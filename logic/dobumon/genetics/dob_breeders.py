@@ -351,10 +351,10 @@ class BaseBreeder(IBreeder):
             illness_rate=illness_rate,
             can_extend_lifespan=can_extend,
         )
-        
+
         # 特性による補正を一括適用
         MutationEngine.apply_phenotype_modifiers(child)
-        
+
         return child
 
 

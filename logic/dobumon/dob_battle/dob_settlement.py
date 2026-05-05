@@ -26,7 +26,6 @@ class BattleSettlementManager:
             loser.win_count * BattleSettlementManager.CHALLENGE_WIN_COUNT_BONUS
         )
 
-
         for t in winner.traits:
             _, reward = TraitRegistry.get(t).on_combat_reward(0.0, reward)
         reward = int(reward)

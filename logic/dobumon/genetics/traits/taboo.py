@@ -1,8 +1,33 @@
 from typing import Any
+
 from .base import BaseMutationTrait
 
 
-class ForbiddenRedTrait(BaseMutationTrait):
+class BaseForbiddenTrait(BaseMutationTrait):
+    """赤と青の禁忌に共通する振る舞い（寿命の指数減衰、延命不可など）をまとめた基底クラス"""
+
+    def get_initial_lifespan_multiplier(self, dobumon: Any) -> float:
+        # 背反・禁断を持つ場合は寿命減衰を無効化（1.0倍）
+        traits = getattr(dobumon, "traits", [])
+        if "antinomy" in traits or "the_forbidden" in traits:
+            return 1.0
+
+        # それ以外は禁忌深度に応じた指数減衰（最低でも1乗分は適用）
+        depth = dobumon.genetics.get("forbidden_depth", 0)
+        return self.lifespan_mod ** max(1, depth)
+
+    def apply_initial_status(self, dobumon: Any):
+        # 1. 共通のステータス補正を適用 (ここで寿命の指数減衰も自動的に適用される)
+        super().apply_initial_status(dobumon)
+
+        # 2. 延命不可フラグ
+        dobumon.can_extend_lifespan = False
+
+    def can_extend_lifespan(self) -> bool:
+        return False
+
+
+class ForbiddenRedTrait(BaseForbiddenTrait):
     key = "forbidden_red"
     desc = "赤の禁忌: オスの血が濃すぎることによる暴走。圧倒的攻撃力を持つが、不妊となり短命化する"
     atk_mod = 1.5
@@ -10,58 +35,29 @@ class ForbiddenRedTrait(BaseMutationTrait):
     lifespan_mod = 0.6
 
     def apply_initial_status(self, dobumon: Any):
-        # 1. 共通のステータス補正を適用
         super().apply_initial_status(dobumon)
-
-        # 2. 禁忌固有の寿命減衰ロジック (指数減衰)
-        depth = dobumon.genetics.get("forbidden_depth", 0)
-        traits = dobumon.traits
-        if "antinomy" not in traits and "the_forbidden" not in traits and depth > 0:
-            # depth に応じた寿命の追加減衰
-            actual_extra_mod = self.lifespan_mod ** depth
-            dobumon.lifespan = float(max(1, int(dobumon.lifespan * actual_extra_mod)))
-            dobumon.max_lifespan = dobumon.lifespan
-        
-        # 3. 追加の固定フラグとペナルティ
         dobumon.is_sterile = True
-        dobumon.can_extend_lifespan = False
-        # 病気率の極端な上昇 (+0.15) 
+        # 病気率の極端な上昇 (+0.15)
         # 乗算補正（Hardy等）の後に加算されることで、最低限のペナルティを保証する
         dobumon.illness_rate += 0.15
 
     def is_sterile(self) -> bool:
         return True
 
-    def can_extend_lifespan(self) -> bool:
-        return False
 
-
-class ForbiddenBlueTrait(BaseMutationTrait):
+class ForbiddenBlueTrait(BaseForbiddenTrait):
     key = "forbidden_blue"
-    desc = "青の禁忌: メスの血が薄すぎることによる神秘。感性が鋭く、生命力が高いが、極めて短命となる"
+    desc = (
+        "青の禁忌: メスの血が薄すぎることによる神秘。感性が鋭く、生命力が高いが、極めて短命となる"
+    )
     hp_mod = 1.2
     eva_mod = 1.2
     lifespan_mod = 0.5
 
     def apply_initial_status(self, dobumon: Any):
-        # 1. 共通補正
         super().apply_initial_status(dobumon)
-
-        # 2. 寿命の指数減衰
-        depth = dobumon.genetics.get("forbidden_depth", 0)
-        traits = dobumon.traits
-        if "antinomy" not in traits and "the_forbidden" not in traits and depth > 0:
-            actual_extra_mod = self.lifespan_mod ** depth
-            dobumon.lifespan = float(max(1, int(dobumon.lifespan * actual_extra_mod)))
-            dobumon.max_lifespan = dobumon.lifespan
-
-        # 3. 追加
-        dobumon.can_extend_lifespan = False
         # 病気率の上昇 (+0.10)
         dobumon.illness_rate += 0.10
-
-    def can_extend_lifespan(self) -> bool:
-        return False
 
     def get_consumption_multiplier(self) -> float:
         return 2.0
@@ -95,7 +91,7 @@ class TheForbiddenTrait(BaseMutationTrait):
         # 禁断個体のバイタル（寿命）は 発生した寿命 × 禁忌深度 となる
         dobumon.lifespan = float(max(1, int(dobumon.lifespan * max(1, depth))))
         dobumon.max_lifespan = dobumon.lifespan
-        
+
         dobumon.is_sterile = True
         dobumon.can_extend_lifespan = False
 

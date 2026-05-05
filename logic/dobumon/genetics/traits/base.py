@@ -26,6 +26,10 @@ class BaseMutationTrait:
     # 交配時の個体値振れ幅補正
     variation_range: Optional[Tuple[float, float]] = None
 
+    def get_initial_lifespan_multiplier(self, dobumon: Any) -> float:
+        """初期寿命に対する乗算補正値を返します。オーバーライドして動的な計算（禁忌深度など）を実装可能です。"""
+        return self.lifespan_mod
+
     def apply_initial_status(self, dobumon: Any):
         """
         個体生成時に初期ステータスや寿命に補正を適用します。
@@ -37,8 +41,10 @@ class BaseMutationTrait:
         dobumon.spd = max(1, int(dobumon.spd * self.spd_mod))
 
         # 寿命補正
-        dobumon.lifespan = float(max(1, int(dobumon.lifespan * self.lifespan_mod)))
-        dobumon.max_lifespan = dobumon.lifespan
+        lifespan_mult = self.get_initial_lifespan_multiplier(dobumon)
+        if lifespan_mult != 1.0:
+            dobumon.lifespan = float(max(1, int(dobumon.lifespan * lifespan_mult)))
+            dobumon.max_lifespan = dobumon.lifespan
 
         # 病気率補正
         dobumon.illness_rate *= self.illness_mod

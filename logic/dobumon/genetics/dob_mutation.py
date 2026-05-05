@@ -1,5 +1,5 @@
 import random
-from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from logic.dobumon.core.dob_exceptions import DobumonError, DobumonGeneticsError
 from logic.dobumon.genetics.dob_genetics_constants import GeneticConstants
@@ -91,7 +91,7 @@ class MutationEngine:
                 genotype[locus] = [trait, trait]
 
     @classmethod
-    def apply_phenotype_modifiers(cls, dobumon: 'Dobumon'):
+    def apply_phenotype_modifiers(cls, dobumon: "Dobumon"):
         """
         個体が持つ特性（traits）に基づいて、実数ステータス、寿命、特殊フラグを適用します。
         """

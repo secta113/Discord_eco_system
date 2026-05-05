@@ -39,7 +39,7 @@ class MendelEngine:
         """遺伝型（Genotype）から実際に発現する特性名（Phenotype）を解決します。"""
         active_traits = []
         all_mutation_keys = TraitRegistry.get_all_keys()
-        
+
         # 標準的なアレルの表現型名（early, late 等）のリストを取得
         # これらは対立遺伝子として genotype に直接入ることは通常ないが、
         # 万が一入っていた場合に「突然変異」として誤検知されないように除外する。
@@ -56,7 +56,7 @@ class MendelEngine:
             # 優先順位が高い順にチェック
             priority_mutations = ["antinomy", "singularity", "anti_taboo"]
             rare_trait = None
-            
+
             # まず優先度の高い変異があるかチェック
             for pm in priority_mutations:
                 if pm in alleles:

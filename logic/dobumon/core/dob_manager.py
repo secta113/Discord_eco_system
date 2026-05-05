@@ -10,10 +10,10 @@ from logic.dobumon.core.dob_exceptions import DobumonError
 from logic.dobumon.core.dob_factory import DobumonFactory
 from logic.dobumon.core.dob_logger import DobumonLogger
 from logic.dobumon.core.dob_models import Dobumon
-from logic.dobumon.genetics.traits.registry import TraitRegistry
 from logic.dobumon.dob_battle.battle_handler import BattleHandler
 from logic.dobumon.dob_battle.wild.wild_handler import WildHandler
 from logic.dobumon.genetics.breeding_handler import BreedingHandler
+from logic.dobumon.genetics.traits.registry import TraitRegistry
 from logic.dobumon.training.training_handler import TrainingHandler
 
 # 開発中フラグ: 死亡を無効化する場合は True に設定します

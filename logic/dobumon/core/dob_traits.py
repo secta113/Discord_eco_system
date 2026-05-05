@@ -4,25 +4,30 @@
 互換性のために TraitRegistry および各特性クラスをエクスポートしています。
 """
 
-from logic.dobumon.genetics.traits.registry import TraitRegistry
 from logic.dobumon.genetics.traits.base import BaseMutationTrait as BaseTrait
-from logic.dobumon.genetics.traits.standard import (
-    EarlyTrait, LateTrait, HardyTrait, FrailTrait, 
-    StableTrait, BurstTrait, AestheticTrait
-)
-from logic.dobumon.genetics.traits.vitality import (
-    UndeadTrait, CrystalizedTrait, ChimeraTrait
-)
-from logic.dobumon.genetics.traits.growth import (
-    UnlimitedTrait, ParasiticTrait
-)
-from logic.dobumon.genetics.traits.potential import (
-    SupernovaTrait, SingularityTrait, AntiTabooTrait
-)
 from logic.dobumon.genetics.traits.body import (
-    GoldHornTrait, RedBackTrait, OddEyeTrait, BlueBloodTrait, GlassBladeTrait
+    BlueBloodTrait,
+    GlassBladeTrait,
+    GoldHornTrait,
+    OddEyeTrait,
+    RedBackTrait,
+)
+from logic.dobumon.genetics.traits.growth import ParasiticTrait, UnlimitedTrait
+from logic.dobumon.genetics.traits.potential import AntiTabooTrait, SingularityTrait, SupernovaTrait
+from logic.dobumon.genetics.traits.registry import TraitRegistry
+from logic.dobumon.genetics.traits.standard import (
+    AestheticTrait,
+    BurstTrait,
+    EarlyTrait,
+    FrailTrait,
+    HardyTrait,
+    LateTrait,
+    StableTrait,
 )
 from logic.dobumon.genetics.traits.taboo import (
-    ForbiddenRedTrait, ForbiddenBlueTrait, AntinomyTrait, 
-    TheForbiddenTrait
+    AntinomyTrait,
+    ForbiddenBlueTrait,
+    ForbiddenRedTrait,
+    TheForbiddenTrait,
 )
+from logic.dobumon.genetics.traits.vitality import ChimeraTrait, CrystalizedTrait, UndeadTrait
