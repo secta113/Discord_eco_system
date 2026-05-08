@@ -208,9 +208,9 @@ async def test_sell_command_flow(cog_dobumon, mock_interaction):
     assert sold_dobu.is_sold
     assert not sold_dobu.is_alive
 
-    # ポイントが増えていること (基本 10000 + ステータス 500*5 + 絆 10*50 = 13,000)
+    # ポイントが増えていること (1000 + 23888 = 24888)
     final_balance = wallet.load_balance(user_id)
-    assert final_balance == 1000 + 13000
+    assert final_balance == 24888
 
 
 @pytest.mark.asyncio

@@ -33,9 +33,11 @@ def test_calculate_sell_price_basic(service):
         affection=0,
         genetics={"forbidden_depth": 0},
     )
-    # 10,000 + (500 * 5) + 0 + 0 = 12,500
+    # 新ロジック:
+    # base(5000) + stat_bonus(sqrt(500)*1000=22360) + gen_bonus(2000) + aff(0) = 29360
+    # stage_mult(young=0.8) -> 29360 * 0.8 = 23488
     price = service.calculate_sell_price(dobu)
-    assert price == 12500
+    assert price == 23488
 
 
 def test_calculate_sell_price_with_bonus(service):
@@ -54,10 +56,11 @@ def test_calculate_sell_price_with_bonus(service):
         affection=50,
         genetics={"forbidden_depth": 0},
     )
-    # 10,000 + (500 * 5) + (50 * 50) + (1 * 2,000)
-    # 10,000 + 2,500 + 2,500 + 2,000 = 17,000
+    # 新ロジック:
+    # base(5000) + stat_bonus(22360) + gen_bonus(1*500 + sqrt(2)*2000=3328) + aff(50*50=2500) = 33188
+    # stage_mult(young=0.8) -> 33188 * 0.8 = 26550
     price = service.calculate_sell_price(dobu)
-    assert price == 17000
+    assert price == 26550
 
 
 def test_calculate_sell_price_with_taboo(service):
@@ -76,10 +79,11 @@ def test_calculate_sell_price_with_taboo(service):
         affection=0,
         genetics={"forbidden_depth": 2},
     )
-    # ベース: 12,500
-    # 20%減額 (-2,500) = 10,000
+    # ベース(before taboo): 23488
+    # 禁忌深度2: 30%減額 (1層15%)
+    # 23488 * 0.7 = 16441
     price = service.calculate_sell_price(dobu)
-    assert price == 10000
+    assert price == 16441
 
 
 def test_calculate_sell_price_max_taboo(service):
@@ -99,7 +103,9 @@ def test_calculate_sell_price_max_taboo(service):
         genetics={"forbidden_depth": 10},
     )
     price = service.calculate_sell_price(dobu)
-    assert price == 0
+    # 禁忌深度10以上 -> 90%減額
+    # 23488 * 0.1 = 2348
+    assert price == 2348
 
 
 @pytest.mark.asyncio

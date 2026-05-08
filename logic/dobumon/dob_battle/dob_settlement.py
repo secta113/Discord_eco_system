@@ -26,8 +26,9 @@ class BattleSettlementManager:
             loser.win_count * BattleSettlementManager.CHALLENGE_WIN_COUNT_BONUS
         )
 
+        exp_multiplier = 1.0
         for t in winner.traits:
-            _, reward = TraitRegistry.get(t).on_combat_reward(0.0, reward)
+            exp_multiplier, reward = TraitRegistry.get(t).on_combat_reward(exp_multiplier, reward)
         reward = int(reward)
 
         # 2. 敗北者の処理
@@ -79,12 +80,15 @@ class BattleSettlementManager:
             player_dobu.win_count += 1
             reward = BattleSettlementManager.WILD_BATTLE_REWARD
 
+            exp_multiplier = 1.0
             for t in player_dobu.traits:
-                _, reward = TraitRegistry.get(t).on_combat_reward(0.0, reward)
+                exp_multiplier, reward = TraitRegistry.get(t).on_combat_reward(
+                    exp_multiplier, reward
+                )
             reward = int(reward)
 
             # 成長（経験値獲得）の計算
-            gains = WildGrowthEngine.calculate_gains(player_dobu)
+            gains = WildGrowthEngine.calculate_gains(player_dobu, exp_multiplier=exp_multiplier)
 
             return {
                 "success": True,

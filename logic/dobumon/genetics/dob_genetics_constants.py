@@ -14,7 +14,7 @@ TRAIT_GENES: Dict[str, Dict[str, str]] = {
 MUTATION_GENE_POOL: Dict[str, List[str]] = {
     "growth": ["unlimited", "parasitic"],
     "vitality": ["undead", "chimera", "crystalized"],
-    "potential": ["supernova", "singularity", "anti_taboo"],
+    "potential": ["supernova", "singularity", "anti_taboo", "antinomy"],
     "body": ["gold_horn", "red_back", "odd_eye", "blue_blood", "glass_blade"],
 }
 

@@ -1,3 +1,5 @@
+import math
+
 import discord
 
 from core.economy import wallet
@@ -21,22 +23,37 @@ class DobumonMarketService:
 
     def calculate_sell_price(self, dobu: Dobumon) -> int:
         """売却価格を計算します。
-        基本(10,000) + (合計ステータス * 5) + (懐き度 * 50) + (世代 - 1) * 2,000
-        禁忌深度1につき10%減額。
+        ハイパーインフレ対策として、高ステータス・高世代個体の価格上昇を非線形（平方根）に抑制。
+        また、ライフステージによる価値の変動（老衰による大幅減額）を導入。
         """
         total_stats = dobu.hp + dobu.atk + dobu.defense + dobu.eva + dobu.spd
-        base_price = 10000
-        stat_bonus = total_stats * 5
+
+        # 1. 基本価格
+        base_price = 5000
+
+        # 2. ステータスボーナス (平方根による減衰)
+        # 10k stats -> 100k pts, 1M stats -> 1M pts, 4M stats -> 2M pts
+        stat_bonus = int(math.sqrt(total_stats) * 1000)
+
+        # 3. 世代ボーナス (緩やかな上昇)
+        generation_bonus = (dobu.generation - 1) * 500 + int(math.sqrt(dobu.generation) * 2000)
+
+        # 4. 懐き度ボーナス
         affection_bonus = dobu.affection * 50
-        generation_bonus = (dobu.generation - 1) * 2000
 
-        initial_price = base_price + stat_bonus + affection_bonus + generation_bonus
+        initial_price = base_price + stat_bonus + generation_bonus + affection_bonus
 
+        # 5. ライフステージ補正 (全盛期は価値が高く、老衰個体は買い叩かれる)
+        stage_multipliers = {"young": 0.8, "prime": 1.2, "senior": 0.6, "twilight": 0.2}
+        stage_mult = stage_multipliers.get(dobu.life_stage, 1.0)
+        price = initial_price * stage_mult
+
+        # 6. 禁忌深度による減額 (1層につき15%減、最大90%減)
         forbidden_depth = dobu.genetics.get("forbidden_depth", 0)
-        reduction_rate = min(1.0, forbidden_depth * 0.1)
-        final_price = int(initial_price * (1.0 - reduction_rate))
+        reduction_rate = min(0.9, forbidden_depth * 0.15)
+        final_price = int(price * (1.0 - reduction_rate))
 
-        return max(0, final_price)
+        return max(500, final_price)
 
     async def execute_sell(self, interaction: discord.Interaction, dobumon_id: str):
         """売却の実行ロジック本体"""

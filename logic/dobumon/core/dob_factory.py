@@ -98,6 +98,9 @@ class DobumonFactory:
         # 特性による実数ステータス・寿命の補正を適用
         MutationEngine.apply_phenotype_modifiers(dobu)
 
+        # ステータス確定後に現在HPを最大HPに同期
+        dobu.health = dobu.hp
+
         return dobu
 
     @staticmethod
@@ -142,8 +145,8 @@ class DobumonFactory:
             traits=traits,
             lineage=[],
         )
-        dobu.health = dobu.hp
         MutationEngine.apply_phenotype_modifiers(dobu)
+        dobu.health = dobu.hp
         return dobu
 
     @staticmethod

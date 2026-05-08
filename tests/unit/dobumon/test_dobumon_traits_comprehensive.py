@@ -90,11 +90,11 @@ def test_conceptual_mutations_complex(sample_dobu):
     assert undead.modifies_battle_death() is True
     assert undead.lifespan_mod == 5.0
 
-    # Parasitic: 0.1x training, 3x reward
+    # Parasitic: 0.1x training, 30x reward
     parasitic = TraitRegistry.get("parasitic")
     assert parasitic.on_growth_multiplier(sample_dobu, 1.0) == 0.1
     exp, pts = parasitic.on_combat_reward(100, 1000)
-    assert exp == 300
+    assert exp == 3000
     assert pts == 3000
 
 

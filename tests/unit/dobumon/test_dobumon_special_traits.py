@@ -85,7 +85,7 @@ class TestSpecialClasses:
         """捕食（parasitic）特性が戦闘報酬を増加させることを確認"""
         trait = TraitRegistry.get("parasitic")
         exp, pts = trait.on_combat_reward(100.0, 1000)
-        assert exp == 300.0
+        assert exp == 3000.0
         assert pts == 3000
 
     def test_singularity_trait_is_permanently_inherited(self):

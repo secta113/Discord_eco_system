@@ -21,4 +21,5 @@ class ParasiticTrait(BaseMutationTrait):
         return current_multiplier * 0.1
 
     def on_combat_reward(self, exp_gain: float, pt_reward: int) -> tuple[float, int]:
-        return exp_gain * 3.0, int(pt_reward * 3.0)
+        # 普段の on_growth_multiplier (0.1倍) を戦闘時に相殺し、さらに3倍の成長を遂げるために 30.0 を乗算する
+        return exp_gain * 30.0, int(pt_reward * 3.0)

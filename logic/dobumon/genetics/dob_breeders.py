@@ -354,6 +354,7 @@ class BaseBreeder(IBreeder):
 
         # 特性による補正を一括適用
         MutationEngine.apply_phenotype_modifiers(child)
+        child.health = child.hp
 
         return child
 

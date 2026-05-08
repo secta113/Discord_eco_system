@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Dict
 
 import discord
 
+from core.utils.formatters import f_commas
+
 if TYPE_CHECKING:
     from logic.dobumon.core.dob_models import Dobumon
 
@@ -46,7 +48,7 @@ class DobumonFormatter:
 
         if not is_owner:
             return f"[{bar}] ??? / ???"
-        return f"[{bar}] {int(math.ceil(current))} / {int(math.ceil(max_val))}"
+        return f"[{bar}] {f_commas(int(math.ceil(current)))} / {f_commas(int(math.ceil(max_val)))}"
 
     @classmethod
     def get_iv_hint(cls, iv_val: float) -> str:
@@ -84,7 +86,7 @@ class DobumonFormatter:
         hp_bar = cls.get_hp_bar(hp_curr, hp_max, length=12, is_owner=is_owner)
 
         def fmt_val(v: float) -> str:
-            return str(int(v)) if is_owner else "???"
+            return f_commas(int(v)) if is_owner else "???"
 
         def fmt_hint(stat_key: str) -> str:
             if not is_owner:
@@ -313,7 +315,7 @@ class DobumonFormatter:
         ]
 
         if dobu.win_count > 0:
-            val = dobu.win_count if is_owner else "???"
+            val = f_commas(dobu.win_count) if is_owner else "???"
             lines.append(f"\n† **勝利数**: {val}")
 
         embed.description = "\n".join(lines)

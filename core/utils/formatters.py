@@ -13,13 +13,20 @@ def f_commas(value: Union[int, float, str], signed: bool = False) -> str:
         str: カマ区切りされた文字列。
     """
     try:
-        if isinstance(value, str):
-            if value.replace("-", "").isdigit():
-                value = int(value)
-            else:
-                value = float(value)
+        # numpy.int64 や Decimal などの int/float 派生ではない数値型に対応するため、文字列経由でパースを試みる
+        if not isinstance(value, (int, float)):
+            s_val = str(value).replace(",", "")
+            # 数値とみなせるかどうかの判定（簡易的）
+            if s_val.replace("-", "").replace(".", "").isdigit():
+                if "." in s_val:
+                    f_val = float(s_val)
+                    value = int(f_val) if f_val.is_integer() else f_val
+                else:
+                    value = int(s_val)
 
         if isinstance(value, (int, float)):
+            if isinstance(value, float) and value.is_integer():
+                value = int(value)
             res = f"{value:,}"
             if signed and value > 0:
                 return f"+{res}"

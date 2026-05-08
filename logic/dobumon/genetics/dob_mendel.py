@@ -53,33 +53,23 @@ class MendelEngine:
                 continue
 
             # 1. 突然変異アレル（希少遺伝子）の検出
-            # 優先順位が高い順にチェック
-            priority_mutations = ["antinomy", "singularity", "anti_taboo"]
-            rare_trait = None
+            # 複数の突然変異アレルがある場合（ヘテロ接合）、それら全てを発現させる
+            locus_rare_traits = []
+            for a in alleles:
+                # アレル名が TraitRegistry に存在し、かつ標準的なアレル(D, r)や
+                # 標準的な表現型名、禁忌形質（これらは後続処理で付与）でない場合
+                if (
+                    a in all_mutation_keys
+                    and a not in ["D", "r"]
+                    and a not in standard_phenotype_names
+                    and "forbidden" not in a
+                ):
+                    if a not in locus_rare_traits:
+                        locus_rare_traits.append(a)
 
-            # まず優先度の高い変異があるかチェック
-            for pm in priority_mutations:
-                if pm in alleles:
-                    rare_trait = pm
-                    break
-
-            # 次にそれ以外の突然変異をチェック
-            if not rare_trait:
-                for a in alleles:
-                    # アレル名が TraitRegistry に存在し、かつ標準的なアレル(D, r)や
-                    # 標準的な表現型名、禁忌形質（これらは後続処理で付与）でない場合
-                    if (
-                        a in all_mutation_keys
-                        and a not in ["D", "r"]
-                        and a not in standard_phenotype_names
-                        and "forbidden" not in a
-                    ):
-                        rare_trait = a
-                        break
-
-            # 変異が見つかればそれを発現特性とする
-            if rare_trait:
-                active_traits.append(rare_trait)
+            # 変異が見つかればそれを発現特性とする（複数あり得る）
+            if locus_rare_traits:
+                active_traits.extend(locus_rare_traits)
             else:
                 # 2. 通常の優劣遺伝判定 (Dがあれば優性表現型、なければ劣性表現型)
                 if "D" in alleles:
@@ -93,5 +83,13 @@ class MendelEngine:
             active_traits.append("forbidden_red")
         if gender == "F" and genetics_meta.get("has_forbidden_blue"):
             active_traits.append("forbidden_blue")
+
+        # 4. 特殊な解決順序の調整（オーバーライド系特性を末尾に移動）
+        # 背反 (antinomy) など、他の特性の効果を打ち消すものは最後に適用される必要がある
+        priority_overrides = ["antinomy", "anti_taboo"]
+        for po in priority_overrides:
+            if po in active_traits:
+                active_traits.remove(po)
+                active_traits.append(po)
 
         return active_traits
