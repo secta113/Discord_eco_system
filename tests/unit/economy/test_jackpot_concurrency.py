@@ -4,7 +4,7 @@ import time
 import pytest
 
 from core.economy import wallet
-from core.utils.constants import GameType, JPRarity
+from logic.constants import GameType, JPRarity
 from logic.economy.jackpot import JackpotService
 
 

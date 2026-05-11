@@ -2,8 +2,8 @@ from unittest.mock import patch
 
 import pytest
 
-from core.utils.constants import GameType, JPRarity
 from logic.bet_service import BetService
+from logic.constants import GameType, JPRarity
 
 
 class TestBetService:

@@ -90,8 +90,10 @@ async def test_fallback_unexpected_error(system_cog_error_handler, mock_interact
 
     await handler(mock_interaction, app_error)
 
-    # 完全に予期せぬエラーは一律で「予期せぬエラーが発生しました…」の文字列になる
+    # 完全に予期せぬエラーは一律で「予期せぬエラーが発生しました…」のEmbedになる
     mock_interaction.response.send_message.assert_called_once()
     args, kwargs = mock_interaction.response.send_message.call_args
-    assert "予期せぬエラーが発生しました" in kwargs.get("content", args[0] if args else "")
+    assert "embed" in kwargs
+    embed = kwargs["embed"]
+    assert "予期せぬ" in embed.description
     assert kwargs.get("ephemeral") is True

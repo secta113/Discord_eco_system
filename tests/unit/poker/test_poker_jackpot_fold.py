@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from core.utils.constants import GameType, JPRarity
+from logic.constants import GameType, JPRarity
 from logic.poker.pk_models import PokerPlayer
 from logic.poker.pk_rules import PokerRules
 from logic.poker.pk_settlement_manager import PokerSettlementManager

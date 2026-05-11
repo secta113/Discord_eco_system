@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 **app_version is here -->  core\utils\config.py**
 
+## [2.7.0] - 2026-05-12
+### Improved
+- **大規模リファクタリング (Core & Cogs)**: `cogs/system.py` のエラーハンドリングを辞書ベースのマッピング構造に刷新し、冗長な条件分岐を排除。
+- **ロギング基盤の刷新**: 自作の `print` ベースのロガーからPython標準の `logging` モジュールへ完全に置き換え。
+- **エラー伝播の適正化**: `core/handlers/storage.py` で発生していた例外の握り潰しを排除し、新設した `StorageError` を用いて上位ロジックへ正しく例外を伝播するよう修正。
+- **レガシー処理の一掃**: `core/handlers/sql_handler/db_base.py` に残存していた不要なマイグレーション関数群（`_migrate_wallets` 等）を削除し、起動時のオーバーヘッドを削減。
+- **定数クラスの配置最適化**: ドメイン固有の定数群を `core/utils/constants.py` から `logic/constants.py` へ移動し、アーキテクチャの分離を強化。
+- **ドキュメントの正確化**: `docs/dobumon/dobumon.md` 内の特殊特性（突然変異）に関する説明を、ソースコード上の実際の補正数値（1.2倍、0.5倍など）と完全に一致するよう修正。
+- **ブラックジャックロジックの分離**: `BlackjackView` に混在していたゲーム進行（ディーラーターン、精算テキスト生成等）を新設した `BlackjackOrchestrator` へ委譲し、UI層とロジック層の分離を強化。
+- **ブラックジャック構成の最適化**: `bj_formatter.py` を `ui/` サブディレクトリへ移動し、関連モジュールを整理。
+
+### Fixed
+- **突然変異アレルの判定バグ修正**: `MendelEngine` における特殊アレル（`the_forbidden`など）の判定処理を `TraitRegistry` ベースに修正し、標準特性名と変異アレルが混同される問題や特殊特性が発現しない問題を完全に解消。
+
 ## [2.6.3] - 2026-05-11
 ### Added
 - **絆(Affection)ロジックの集約**: 各所に散らばっていた懐き度によるステータス補正（老化速度、突然死リスク、育成費用割引、トレーニング大成功確率）を `Dobumon` モデルのプロパティとして一元化し、メンテナンス性を向上。

@@ -4,9 +4,9 @@ import io
 import discord
 
 from core.ui.view_base import BaseView
-from core.utils.formatters import f_pts
 from logic.blackjack.bj_canvas import BlackjackCanvas
 from logic.blackjack.bj_deck import Deck
+from logic.blackjack.bj_orchestrator import BlackjackOrchestrator
 from logic.blackjack.bj_service import BlackjackService
 
 
@@ -28,6 +28,7 @@ class BlackjackView(BlackjackBaseView):
         self.cleanup_callback = cleanup_callback
         self.save_callback = save_callback
         self.canvas = BlackjackCanvas()
+        self.orchestrator = BlackjackOrchestrator(self.session)
         # 画像キャッシュ: {cache_key: bytes}
         self._image_cache = {}
         # 送信済みアタッチメントの追跡: {filename: cache_key}
@@ -249,49 +250,13 @@ class BlackjackView(BlackjackBaseView):
             )
 
     async def _next_turn(self, interaction, last_action_msg):
-        """ターンを進める処理"""
-        has_next = self.session.advance_turn_if_needed()
-
-        if has_next:
-            if self.save_callback:
-                self.save_callback()
-            next_p = self.session.get_current_player()
-            await self._update_display(
-                interaction, f"{last_action_msg}\n次は {next_p['mention']} の番です。"
-            )
-        else:
-            # 全員終了 -> ディーラーターン演出
-            self.session.is_dealer_turn_executed = True
-
-            # 手を隠さず表示するため一度更新
-            await self._update_display(interaction, f"{last_action_msg}\nディーラーの番です。")
-            await asyncio.sleep(1.0)
-
-            # 1枚ずつ引く演出
-            while self.session.should_dealer_draw():
-                card_str = self.session.dealer_draw_step()
-                await self._update_display(
-                    interaction, f"ディーラーがカードを引いています: {card_str}"
-                )
-                await asyncio.sleep(1.2)
-
-            # 最終決着
-            results = self.session.settle_all()
-
-            # 結果表示用テキスト作成
-            d_score = Deck.get_score(self.session.dealer_hand)
-            res_text = f"ディーラーのスコア: **{d_score}**\n\n"
-            for r in results:
-                res_text += f"**{r['name']}** (計: {f_pts(r['total_payout'])}):\n"
-                for hr in r["hands"]:
-                    res_text += f"> {hr['result']}\n"
-                res_text += "\n"
-
-            await self._update_display(
-                interaction,
-                f"🏆 **ゲーム終了** 🏆\n{res_text}",
-                is_game_end=True,
-            )
+        """Orchestratorに次のターン処理を委譲"""
+        await self.orchestrator.handle_next_turn(
+            interaction,
+            self._update_display,
+            last_action_msg,
+            save_callback=self.save_callback,
+        )
 
     @property
     def message(self):

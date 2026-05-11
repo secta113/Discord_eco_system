@@ -1,6 +1,7 @@
 import os
-import traceback
 from typing import Dict, List, Optional, Protocol
+
+from pydantic import TypeAdapter
 
 from core.handlers import sql_handler
 from core.models import validation
@@ -9,7 +10,7 @@ from core.models.validation import (
     SessionSchemaType,
     UserSchema,
 )
-from core.utils.exceptions import DataValidationError
+from core.utils.exceptions import DataValidationError, StorageError
 from core.utils.logger import Logger
 
 
@@ -84,8 +85,8 @@ class SQLiteUserRepository(SQLiteBaseRepository, IUserRepository):
                 data["id"] = user_id
             return UserSchema(**data) if data else None
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get User Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get User Error: {e}", exc_info=True)
+            raise StorageError(f"ユーザー情報の取得に失敗しました: {e}")
 
     def save_user(self, user: UserSchema) -> None:
         user_id = user.id
@@ -113,9 +114,8 @@ class SQLiteUserRepository(SQLiteBaseRepository, IUserRepository):
         except Exception as e:
             if isinstance(e, (ValueError, DataValidationError)):
                 raise
-            Logger.error("Storage", f"SQLite Save User Error: {e}")
-            traceback.print_exc()
-            raise
+            Logger.error("Storage", f"SQLite Save User Error: {e}", exc_info=True)
+            raise StorageError(f"ユーザー情報の保存に失敗しました: {e}")
 
     def get_all_users(self) -> Dict[int, UserSchema]:
         try:
@@ -127,8 +127,8 @@ class SQLiteUserRepository(SQLiteBaseRepository, IUserRepository):
                 res[uid] = UserSchema(**data)
             return res
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get All Users Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get All Users Error: {e}", exc_info=True)
+            raise StorageError(f"全ユーザー情報の取得に失敗しました: {e}")
 
 
 class SQLiteSessionRepository(SQLiteBaseRepository, ISessionRepository):
@@ -137,13 +137,11 @@ class SQLiteSessionRepository(SQLiteBaseRepository, ISessionRepository):
             data = sql_handler.get_session(self.db_path, channel_id)
             if not data:
                 return None
-            from pydantic import TypeAdapter
-
             adapter = TypeAdapter(SessionSchemaType)
             return adapter.validate_python(data)
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get Session Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get Session Error: {e}", exc_info=True)
+            raise StorageError(f"セッション情報の取得に失敗しました: {e}")
 
     def save_session(self, session: SessionSchemaType) -> None:
         channel_id = session.channel_id
@@ -161,21 +159,19 @@ class SQLiteSessionRepository(SQLiteBaseRepository, ISessionRepository):
                 data,
             )
         except Exception as e:
-            Logger.error("Storage", f"SQLite Save Session Error: {e}")
-            traceback.print_exc()
+            Logger.error("Storage", f"SQLite Save Session Error: {e}", exc_info=True)
+            raise StorageError(f"セッション情報の保存に失敗しました: {e}")
 
     def delete_session(self, channel_id: int) -> None:
         try:
             sql_handler.delete_session(self.db_path, channel_id)
         except Exception as e:
-            Logger.error("Storage", f"SQLite Delete Session Error: {e}")
-            traceback.print_exc()
+            Logger.error("Storage", f"SQLite Delete Session Error: {e}", exc_info=True)
+            raise StorageError(f"セッション情報の削除に失敗しました: {e}")
 
     def get_all_sessions(self) -> Dict[str, SessionSchemaType]:
         try:
             all_data = sql_handler.get_all_sessions(self.db_path)
-            from pydantic import TypeAdapter
-
             adapter = TypeAdapter(SessionSchemaType)
             res = {}
             for cid, data in all_data.items():
@@ -184,8 +180,8 @@ class SQLiteSessionRepository(SQLiteBaseRepository, ISessionRepository):
                 res[cid] = adapter.validate_python(data)
             return res
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get All Sessions Error: {e}")
-            return {}
+            Logger.error("Storage", f"SQLite Get All Sessions Error: {e}", exc_info=True)
+            raise StorageError(f"全セッション情報の取得に失敗しました: {e}")
 
 
 class SQLiteDobumonRepository(SQLiteBaseRepository, IDobumonRepository):
@@ -194,8 +190,8 @@ class SQLiteDobumonRepository(SQLiteBaseRepository, IDobumonRepository):
             data = sql_handler.get_dobumon(self.db_path, dobumon_id)
             return DobumonSchema(**data) if data else None
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get Dobumon Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get Dobumon Error: {e}", exc_info=True)
+            raise StorageError(f"怒武者情報の取得に失敗しました: {e}")
 
     def save_dobumon(self, dobumon: DobumonSchema) -> None:
         try:
@@ -205,25 +201,24 @@ class SQLiteDobumonRepository(SQLiteBaseRepository, IDobumonRepository):
         except Exception as e:
             if isinstance(e, DataValidationError):
                 raise
-            Logger.error("Storage", f"SQLite Save Dobumon Error: {e}")
-            traceback.print_exc()
-            raise
+            Logger.error("Storage", f"SQLite Save Dobumon Error: {e}", exc_info=True)
+            raise StorageError(f"怒武者情報の保存に失敗しました: {e}")
 
     def get_user_dobumons(self, owner_id: int, only_alive: bool = True) -> List[DobumonSchema]:
         try:
             all_data = sql_handler.get_user_dobumons(self.db_path, owner_id, only_alive)
             return [DobumonSchema(**data) for data in all_data]
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get User Dobumons Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get User Dobumons Error: {e}", exc_info=True)
+            raise StorageError(f"ユーザーの怒武者一覧の取得に失敗しました: {e}")
 
     def get_dobumons_by_name(self, name: str) -> List[DobumonSchema]:
         try:
             all_data = sql_handler.get_dobumons_by_name(self.db_path, name)
             return [DobumonSchema(**data) for data in all_data]
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get Dobumons By Name Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get Dobumons By Name Error: {e}", exc_info=True)
+            raise StorageError(f"名前による怒武者検索に失敗しました: {e}")
 
     def get_all_alive_dobumons(self) -> List[DobumonSchema]:
         try:
@@ -232,15 +227,15 @@ class SQLiteDobumonRepository(SQLiteBaseRepository, IDobumonRepository):
             all_data = dobumon_sql.get_all_alive_dobumons(self.db_path)
             return [DobumonSchema(**data) for data in all_data]
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get All Alive Dobumons Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get All Alive Dobumons Error: {e}", exc_info=True)
+            raise StorageError(f"生存している全怒武者の取得に失敗しました: {e}")
 
     def delete_dobumon(self, dobumon_id: str) -> None:
         try:
             sql_handler.delete_dobumon(self.db_path, dobumon_id)
         except Exception as e:
-            Logger.error("Storage", f"SQLite Delete Dobumon Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Delete Dobumon Error: {e}", exc_info=True)
+            raise StorageError(f"怒武者の削除に失敗しました: {e}")
 
 
 class SQLiteSystemRepository(SQLiteBaseRepository, ISystemRepository):
@@ -248,15 +243,15 @@ class SQLiteSystemRepository(SQLiteBaseRepository, ISystemRepository):
         try:
             return sql_handler.get_system_stats(self.db_path, key)
         except Exception as e:
-            Logger.error("Storage", f"SQLite Get System Data Error: {e}")
-            raise
+            Logger.error("Storage", f"SQLite Get System Data Error: {e}", exc_info=True)
+            raise StorageError(f"システムデータの取得に失敗しました: {e}")
 
     def save_system_data(self, key: str, data: Dict) -> None:
         try:
             sql_handler.upsert_system_stats(self.db_path, key, data)
         except Exception as e:
-            Logger.error("Storage", f"SQLite Save System Data Error: {e}")
-            traceback.print_exc()
+            Logger.error("Storage", f"SQLite Save System Data Error: {e}", exc_info=True)
+            raise StorageError(f"システムデータの保存に失敗しました: {e}")
 
     def log_jackpot(
         self,
@@ -274,8 +269,8 @@ class SQLiteSystemRepository(SQLiteBaseRepository, ISystemRepository):
                 self.db_path, user_id, game_type, hand_name, rarity, amount, pool_after
             )
         except Exception as e:
-            Logger.error("Storage", f"SQLite Log Jackpot Error: {e}")
-            traceback.print_exc()
+            Logger.error("Storage", f"SQLite Log Jackpot Error: {e}", exc_info=True)
+            raise StorageError(f"ジャックポットログの保存に失敗しました: {e}")
 
 
 # 過去との互換性のための IStorage は削除 (計画どおり)

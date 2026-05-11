@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from core.utils.constants import JPRarity
+from logic.constants import JPRarity
 
 from .bj_models import BlackjackHand
 

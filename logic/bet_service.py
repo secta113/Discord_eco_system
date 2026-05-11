@@ -1,5 +1,5 @@
-from core.utils.constants import GameType, JPRarity
 from core.utils.logger import Logger
+from logic.constants import GameType, JPRarity
 
 from .economy.bonus import BonusService
 from .economy.eco_exceptions import BetLimitViolationError, DailyAlreadyClaimedError

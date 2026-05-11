@@ -42,8 +42,6 @@ def init_db(db_path: str):
             )
         """)
 
-        _migrate_wallets(cursor)
-
         # ゲーム進行状態テーブル (Bot再起動復旧用)
         # ゲーム進行状態テーブル (Bot再起動復旧用)
         cursor.execute("""
@@ -122,137 +120,11 @@ def init_db(db_path: str):
                 updated_at TEXT
             )
         """)
-        _migrate_dobumons(cursor)
-
-        # health の不整合修正マイグレーション: 0 以下の値を hp (フルHP) として復元
 
         # health の不整合修正マイグレーション: 0 以下の値を hp (フルHP) として復元
         cursor.execute("UPDATE dobumons SET health = hp WHERE health <= 0")
 
         conn.commit()
-        repair_legacy_dobumons(conn)
-
-
-def _migrate_wallets(cursor: sqlite3.Cursor) -> None:
-    """wallets テーブルのマイグレーションを行います。"""
-    cursor.execute("PRAGMA table_info(wallets)")
-    columns = [col["name"] for col in cursor.fetchall()]
-    if "history" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN history TEXT")
-    if "total_wins" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN total_wins INTEGER DEFAULT 0")
-    if "games_played" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN games_played INTEGER DEFAULT 0")
-    if "max_win_amount" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN max_win_amount INTEGER DEFAULT 0")
-    if "last_gacha_daily" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN last_gacha_daily TEXT")
-    if "gacha_collection" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN gacha_collection TEXT")
-    if "gacha_count_today" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN gacha_count_today INTEGER DEFAULT 0")
-    if "last_wild_battle_date" not in columns:
-        cursor.execute(
-            "ALTER TABLE wallets ADD COLUMN last_wild_battle_date TEXT DEFAULT '1970-01-01'"
-        )
-    if "wild_battle_count_today" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN wild_battle_count_today INTEGER DEFAULT 0")
-    if "dob_buy_data" not in columns:
-        cursor.execute("ALTER TABLE wallets ADD COLUMN dob_buy_data TEXT")
-
-
-def _migrate_dobumons(cursor: sqlite3.Cursor) -> None:
-    """dobumons テーブルのマイグレーションを行います。"""
-    cursor.execute("PRAGMA table_info(dobumons)")
-    columns = [col["name"] for col in cursor.fetchall()]
-    if "last_train_date" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN last_train_date TEXT DEFAULT '1970-01-01'")
-    if "today_train_count" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN today_train_count INTEGER DEFAULT 0")
-    if "is_sterile" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN is_sterile INTEGER DEFAULT 0")
-    if "can_extend_lifespan" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN can_extend_lifespan INTEGER DEFAULT 1")
-    if "illness_rate" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN illness_rate REAL DEFAULT 0.01")
-    if "today_affection_gain" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN today_affection_gain INTEGER DEFAULT 0")
-    if "generation" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN generation INTEGER DEFAULT 1")
-    if "lineage" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN lineage TEXT")
-    if "traits" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN traits TEXT")
-    if "today_wild_battle_count" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN today_wild_battle_count INTEGER DEFAULT 0")
-    if "today_massage_count" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN today_massage_count INTEGER DEFAULT 0")
-    if "max_lifespan" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN max_lifespan REAL DEFAULT 100")
-    if "shop_flags" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN shop_flags TEXT")
-    if "is_sold" not in columns:
-        cursor.execute("ALTER TABLE dobumons ADD COLUMN is_sold INTEGER DEFAULT 0")
-
-
-def repair_legacy_dobumons(conn: sqlite3.Connection) -> None:
-    """遺伝子情報を持たない旧データのドブモンに対し、初期データ（野生種相当の遺伝子・IV等）を付与します。
-    Bot起動時に一度だけ実行され、新システムへの互換性を確保します。
-
-    Args:
-        conn: SQLite データベース接続オブジェクト
-    """
-    import random
-
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT dobumon_id, genetics, traits, iv FROM dobumons WHERE genetics IS NULL OR traits IS NULL OR iv IS NULL OR genetics = '{}'"
-    )
-    rows = cursor.fetchall()
-
-    if not rows:
-        return
-
-    for row in rows:
-        did = row["dobumon_id"]
-
-        # 1. 遺伝型の生成 (野生種相当)
-        genotype = {
-            "growth": ["D", "r"],
-            "vitality": ["D", "r"],
-            "potential": ["D", "r"],
-            "body": ["D", "r"],
-        }
-
-        # 2. 特性の解決 (簡易版)
-        traits = ["early", "hardy", "stable", "normal"]  # D 側の特性をデフォルト付与
-
-        # 3. IVの補完 (既に値があれば維持、なければ平均)
-        current_iv: Dict[str, float] = {}
-        if row["iv"]:
-            try:
-                current_iv = json.loads(row["iv"])
-            except Exception:
-                pass
-
-        if not current_iv:
-            current_iv = {
-                k: round(random.uniform(0.9, 1.1), 2)
-                for k in ["hp", "atk", "defense", "eva", "spd"]
-            }
-
-        # 4. 更新
-        genetics_json = json.dumps({"genotype": genotype}, ensure_ascii=False)
-        traits_json = json.dumps(traits, ensure_ascii=False)
-        iv_json = json.dumps(current_iv, ensure_ascii=False)
-        lineage_json = json.dumps([], ensure_ascii=False)
-
-        cursor.execute(
-            "UPDATE dobumons SET genetics = ?, traits = ?, iv = ?, lineage = IFNULL(lineage, ?) WHERE dobumon_id = ?",
-            (genetics_json, traits_json, iv_json, lineage_json, did),
-        )
-
-    conn.commit()
 
 
 def get_system_stats(db_path: str, key: str) -> Optional[Dict[str, Any]]:

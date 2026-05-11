@@ -9,7 +9,7 @@ from core.utils.exceptions import EconomyError
 from core.utils.formatters import f_bold_pts, f_pts
 from logic.bet_service import BetService
 from logic.blackjack.bj_exceptions import BlackjackError
-from logic.blackjack.bj_formatter import BlackjackFormatter
+from logic.blackjack.ui.bj_formatter import BlackjackFormatter
 from logic.chinchiro.cc_exceptions import ChinchiroError
 from logic.chinchiro.cc_formatter import ChinchiroFormatter
 from logic.economy.eco_formatter import EconomyFormatter

@@ -1,8 +1,8 @@
 from typing import Dict, List
 
 from core.economy import wallet
-from core.utils.constants import GameType, JPRarity
 from logic.bet_service import BetService
+from logic.constants import GameType, JPRarity
 from managers.game_session import BaseGameSession
 
 from .cc_exceptions import ChinchiroTurnError

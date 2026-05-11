@@ -38,14 +38,18 @@ class MendelEngine:
     ) -> List[str]:
         """遺伝型（Genotype）から実際に発現する特性名（Phenotype）を解決します。"""
         active_traits = []
-        all_mutation_keys = TraitRegistry.get_all_keys()
+        # 標準的な表現型名（"early", "hardy" など）のセットを作成
+        standard_phenotypes = {
+            phenotype
+            for def_dict in GeneticConstants.TRAIT_GENES.values()
+            for phenotype in (def_dict["D"], def_dict["r"])
+        }
 
-        # 標準的なアレルの表現型名（early, late 等）のリストを取得
-        # これらは対立遺伝子として genotype に直接入ることは通常ないが、
-        # 万が一入っていた場合に「突然変異」として誤検知されないように除外する。
-        standard_phenotype_names = []
-        for def_dict in GeneticConstants.TRAIT_GENES.values():
-            standard_phenotype_names.extend([def_dict["D"], def_dict["r"]])
+        # 突然変異（特殊）アレルとして有効なキーの集合
+        # TraitRegistry に登録されている全特性から、標準表現型を除外したもの
+        valid_mutation_alleles = {
+            k for k in TraitRegistry.get_all_keys() if k not in standard_phenotypes
+        }
 
         for locus_key, alleles in genotype.items():
             definition = GeneticConstants.TRAIT_GENES.get(locus_key)
@@ -56,14 +60,8 @@ class MendelEngine:
             # 複数の突然変異アレルがある場合（ヘテロ接合）、それら全てを発現させる
             locus_rare_traits = []
             for a in alleles:
-                # アレル名が TraitRegistry に存在し、かつ標準的なアレル(D, r)や
-                # 標準的な表現型名、禁忌形質（これらは後続処理で付与）でない場合
-                if (
-                    a in all_mutation_keys
-                    and a not in ["D", "r"]
-                    and a not in standard_phenotype_names
-                    and "forbidden" not in a
-                ):
+                # 登録されている特殊アレルのみを突然変異として扱う
+                if a in valid_mutation_alleles:
                     if a not in locus_rare_traits:
                         locus_rare_traits.append(a)
 

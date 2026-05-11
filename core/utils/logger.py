@@ -1,36 +1,60 @@
+import logging
+import os
 import sys
 
 from core.utils.time_utils import get_jst_timestamp
+
+# ロギングの初期設定
+# JSTタイムスタンプは自前のフォーマットで対応するか、loggingのFormatterを拡張できますが、
+# 今回は既存のフォーマット `[Timestamp] [LEVEL] [Module] Message` を保つために
+# カスタムFormatterを作成します。
+
+
+class JSTFormatter(logging.Formatter):
+    def formatTime(self, record, datefmt=None):
+        return get_jst_timestamp()
+
+
+def _setup_logger():
+    logger = logging.getLogger("DiscordEcoSystem")
+    if not logger.handlers:
+        logger.setLevel(logging.DEBUG)
+
+        # コンソール出力用ハンドラ
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.DEBUG)
+
+        # フォーマッタの設定
+        formatter = JSTFormatter("[%(asctime)s] [%(levelname)-5s] [%(name)s] %(message)s")
+        console_handler.setFormatter(formatter)
+
+        logger.addHandler(console_handler)
+
+        # 将来的にファイル出力が必要な場合はここに FileHandler を追加可能
+    return logger
+
+
+_internal_logger = _setup_logger()
 
 
 class Logger:
     """
     システム全体のログ出力を管理するクラス。
-    JSTタイムスタンプを自動付与し、標準出力に表示します。
+    標準の `logging` モジュールをラップし、既存インターフェースと互換性を保ちます。
     """
 
     @staticmethod
-    def _log(level: str, module: str, message: str):
-        # 共通ユーティリティから JST タイムスタンプを取得
-        timestamp = get_jst_timestamp()
-
-        # フォーマット: [Timestamp] [LEVEL] [Module] Message
-        formatted_msg = f"[{timestamp}] [{level.ljust(5)}] [{module}] {message}"
-        print(formatted_msg)
-        sys.stdout.flush()  # Raspberry Pi等でのバッファリング対策
+    def info(module: str, message: str, exc_info=False):
+        _internal_logger.getChild(module).info(message, exc_info=exc_info)
 
     @staticmethod
-    def info(module: str, message: str):
-        Logger._log("INFO", module, message)
+    def warn(module: str, message: str, exc_info=False):
+        _internal_logger.getChild(module).warning(message, exc_info=exc_info)
 
     @staticmethod
-    def warn(module: str, message: str):
-        Logger._log("WARN", module, message)
+    def error(module: str, message: str, exc_info=False):
+        _internal_logger.getChild(module).error(message, exc_info=exc_info)
 
     @staticmethod
-    def error(module: str, message: str):
-        Logger._log("ERROR", module, message)
-
-    @staticmethod
-    def debug(module: str, message: str):
-        Logger._log("DEBUG", module, message)
+    def debug(module: str, message: str, exc_info=False):
+        _internal_logger.getChild(module).debug(message, exc_info=exc_info)
