@@ -1,9 +1,9 @@
 from typing import Dict, List, Optional, Tuple
 
 from core.economy import wallet
-from core.utils.constants import GameType, JPRarity
 from core.utils.logger import Logger
 from logic.bet_service import BetService
+from logic.constants import GameType, JPRarity
 
 from .pk_models import PokerPlayer
 from .pk_rules import PokerRules

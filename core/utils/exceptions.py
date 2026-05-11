@@ -28,3 +28,9 @@ class GameError(BotError):
     """ゲーム進行中（期限切れ、不正なアクション等）のエラー。"""
 
     pass
+
+
+class StorageError(BotError):
+    """データベース等の保存・読み込み処理に関するエラー。"""
+
+    pass

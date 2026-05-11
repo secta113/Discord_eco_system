@@ -4,8 +4,8 @@ import threading
 import time
 
 from core.economy import wallet
-from core.utils.constants import GameType, JPRarity
 from core.utils.logger import Logger
+from logic.constants import GameType, JPRarity
 
 
 class JackpotService:

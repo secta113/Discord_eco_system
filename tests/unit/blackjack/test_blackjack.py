@@ -2,10 +2,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from core.utils.constants import GameType, JPRarity
 from logic.blackjack.bj_deck import Deck
 from logic.blackjack.bj_models import BlackjackHand, BlackjackPlayer
 from logic.blackjack.bj_service import BlackjackService
+from logic.constants import GameType, JPRarity
 
 
 @patch("logic.blackjack.bj_service.wallet")
