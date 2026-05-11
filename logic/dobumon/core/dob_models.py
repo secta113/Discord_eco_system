@@ -119,6 +119,38 @@ class Dobumon:
         self.health = 0.0
 
     @property
+    def affection_aging_multiplier(self) -> float:
+        """懐き度による老化速度（寿命消費倍率）の緩和"""
+        if self.affection >= 100:
+            return 0.85
+        elif self.affection >= 50:
+            return 0.95
+        return 1.0
+
+    @property
+    def affection_sudden_death_modifier(self) -> float:
+        """懐き度による突然死リスクの補正"""
+        if self.affection < 0:
+            return 0.02
+        elif self.affection < 5:
+            return 0.01
+        elif self.affection >= 100:
+            return -0.03
+        elif self.affection >= 50:
+            return -0.01
+        return 0.0
+
+    @property
+    def affection_training_discount(self) -> float:
+        """懐き度による育成費用の割引率"""
+        return min(0.5, self.affection * 0.001)
+
+    @property
+    def affection_great_success_bonus(self) -> float:
+        """懐き度によるトレーニング大成功確率への加算ボーナス"""
+        return self.affection * 0.001
+
+    @property
     def consumption_mod(self) -> float:
         """
         寿命消費および疲労蓄積の倍率。
@@ -137,10 +169,7 @@ class Dobumon:
             mod *= trait_obj.get_consumption_multiplier()
 
         # 3. 懐き度による老化速度の緩和
-        if self.affection >= 100:
-            mod *= 0.85
-        elif self.affection >= 50:
-            mod *= 0.95
+        mod *= self.affection_aging_multiplier
 
         return round(mod, 3)
 

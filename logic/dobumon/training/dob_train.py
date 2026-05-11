@@ -39,7 +39,7 @@ class TrainingEngine:
         else:
             base_cost = 4000
 
-        discount_rate = min(0.5, dobu.affection * 0.001)
+        discount_rate = dobu.affection_training_discount
         return int(base_cost * (1 - discount_rate))
 
     @staticmethod
@@ -59,8 +59,8 @@ class TrainingEngine:
         base_power = 1.0
 
         # 大成功判定 (懐き度による確率変動)
-        # ベース10% + 懐き度/1000 (懐き度 400 で +40% = 計50%)
-        chance = 0.1 + (dobu.affection * 0.001)
+        # ベース10% + 懐き度ボーナス (最大適用時のキャップ等は維持)
+        chance = 0.1 + dobu.affection_great_success_bonus
 
         # 特性による補正
         max_chance = 0.5

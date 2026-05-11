@@ -37,7 +37,6 @@ class DobumonAdminAction:
         model = dead_only[0]
         dobu = Dobumon(**model.model_dump())
         dobu.revive()
-        self.repo.save_dobumon(dobu.to_schema())  # 仮にsave_dobumonが直接モデルを受け取れるなら
         # 元のmanager.save_dobumonはrepo.save_dobumon(model)を呼んでいた
         # Repoが必要なのはDobumonSchemaか
         from core.models.validation import DobumonSchema

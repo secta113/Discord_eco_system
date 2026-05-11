@@ -166,8 +166,8 @@ def deploy():
 
         # 1. 本番DBをローカルに同期
         if not download_db():
-          print("❌ Deployment Aborted (DB Sync Failure).")
-          return
+            print("❌ Deployment Aborted (DB Sync Failure).")
+            return
 
         # 2. ローカルでマイグレーション実行
         local_migrate()
